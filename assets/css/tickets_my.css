@@ -1,0 +1,262 @@
+/* tickets_my.php specific styles */
+
+.tickets-container {
+    margin-top: 2rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tickets-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.tickets-title {
+    color: #333;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tickets-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.tickets-list {
+    margin-top: 1.5rem;
+}
+
+.ticket-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.ticket-header {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.ticket-event-title {
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.ticket-event-date {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-event-venue {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-order-info {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.group-ticket {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.group-ticket-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.group-ticket-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+    text-align: left;
+}
+
+.group-ticket-details {
+    margin-bottom: 0.8rem;
+}
+
+.group-ticket-code {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+    background: rgba(255,255,255,0.2);
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.ticket-actions {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ticket-button {
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+}
+
+.ticket-details {
+    margin-top: 1.5rem;
+}
+
+.ticket-details-summary {
+    cursor: pointer;
+    color: #007bff;
+    font-weight: 500;
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.ticket-details-content {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.ticket-item {
+    padding: 1rem;
+    text-align: center;
+}
+
+.ticket-item-border {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.ticket-item-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.individual-tickets {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.individual-ticket {
+    border: 2px solid #eee;
+    border-radius: 12px;
+    padding: 2rem;
+    position: relative;
+    text-align: center;
+    background: #fafafa;
+}
+
+.ticket-status-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.ticket-content {
+    margin-bottom: 1.5rem;
+}
+
+.ticket-name {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.4rem;
+}
+
+.ticket-info-box {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: left;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ticket-attendee-info {
+    margin-bottom: 0.8rem;
+}
+
+.ticket-code-section {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.ticket-check-in-status {
+    color: #28a745;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: #d4edda;
+    border-radius: 5px;
+}
+
+.empty-tickets {
+    background: white;
+    padding: 4rem 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.empty-tickets-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-tickets-title {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.empty-tickets-text {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.empty-tickets-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.empty-tickets-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+}

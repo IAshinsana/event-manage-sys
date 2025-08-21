@@ -1,0 +1,98 @@
+/* events.php specific styles */
+
+.events-container {
+    margin-top: 2rem;
+}
+
+.events-search-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.events-search-form {
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.events-search-input {
+    flex: 1;
+    min-width: 200px;
+}
+
+.events-search-category {
+    min-width: 150px;
+}
+
+/* Event grid styles are in main style.css */
+
+.event-category-badge {
+    background: #007bff;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.events-empty {
+    background: white;
+    padding: 4rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.events-empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.events-empty-title {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.events-empty-text {
+    color: #666;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.events-empty-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.events-empty-button-primary {
+    padding: 0.75rem 2rem;
+}
+
+.events-empty-button-secondary {
+    padding: 0.75rem 2rem;
+}
+
+.events-empty-tip {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+    margin-top: 2rem;
+}
+
+.events-empty-tip-strong {
+    color: #007bff;
+}
+
+.events-empty-tip-link {
+    color: #007bff;
+    text-decoration: none;
+}

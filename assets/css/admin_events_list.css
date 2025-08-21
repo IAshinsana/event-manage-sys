@@ -1,0 +1,36 @@
+/* admin/events_list.php specific styles */
+
+.admin-events-container {
+    margin-top: 2rem;
+}
+
+.admin-events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-events-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.admin-events-action-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.admin-events-empty {
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.admin-events-empty-text {
+    color: #666;
+    margin-bottom: 2rem;
+}
