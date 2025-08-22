@@ -371,7 +371,8 @@ main {
 /* Tables */
 .table, .admin-table {
     width: 100%;
-    border-collapse: collapse;
+    min-width: 1100px;
+    /* border-collapse: collapse; */
     background: white;
     border-radius: var(--radius);
     overflow: hidden;
@@ -379,7 +380,8 @@ main {
 }
 
 .table th, .table td, .admin-table th, .admin-table td {
-    padding: 1rem 0.25rem;
+    width: fit-content;
+    padding: 1rem 0;
     text-align: left;
     border-bottom: 1px solid var(--border);
 }
