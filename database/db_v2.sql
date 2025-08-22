@@ -16,7 +16,9 @@
 
 
 -- Dumping database structure for event_v2
-USE `u492478120_event_v2`;
+DROP DATABASE IF EXISTS `event_v2`;
+CREATE DATABASE IF NOT EXISTS `event_v2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `event_v2`;
 
 -- Dumping structure for table event_v2.attendees
 DROP TABLE IF EXISTS `attendees`;
@@ -245,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `ticket_types` (
   CONSTRAINT `ticket_types_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- Dumping data for table event_v2.ticket_types: ~1 rows (approximately)
+-- Dumping data for table event_v2.ticket_types: ~2 rows (approximately)
 INSERT INTO `ticket_types` (`id`, `event_id`, `name`, `description`, `price_cents`, `quantity_available`, `max_per_order`, `created_at`, `updated_at`, `currency`, `qty_total`, `qty_sold`) VALUES
 	(6, 4, 'Silver', '', 250000, 50, 10, '2025-08-21 16:44:03', '2025-08-21 16:59:37', 'LKR', 100, 3);
 
