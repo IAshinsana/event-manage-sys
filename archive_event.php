@@ -19,6 +19,7 @@ if (!$event_id || !$action) {
     echo "Invalid request";
     exit;
 }
+// my coments
 
 // Verify user has permission to manage this event
 $event_check_sql = "SELECT e.*, 0 as tickets_sold FROM events e WHERE e.id = ?";
