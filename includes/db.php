@@ -1,7 +1,7 @@
 <?php
 // Database connection - simple mysqli connection
 $host = 'localhost';
-$username = 'root';
+$username = 'induwara';
 $password = 'Induwara@2004'; // Change this to your MySQL password
 $database = 'event_v2';
 
