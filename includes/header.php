@@ -9,6 +9,7 @@ include_once 'auth.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>EventTickets</title>
     <link rel="stylesheet" href="<?php echo $BASE_URL; ?>assets/css/style.css">
+    <link rel="shortcut icon" href="/assets/icons/fav-icon.png" type="image/x-icon">
     <script src="<?php echo $BASE_URL; ?>assets/js/event-manager.js" defer></script>
 </head>
 <body>
