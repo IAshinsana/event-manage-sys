@@ -3,7 +3,6 @@ $page_title = "Coordinator Dashboard";
 include '../includes/header.php';
 include '../includes/db.php';
 ?>
-<link rel="stylesheet" href="../assets/css/coordinator_dashboard.css">
 <?php
 
 // Check if user is coordinator
@@ -59,172 +58,191 @@ $stats_result = $conn->query($stats_sql);
 $stats = $stats_result->fetch_assoc();
 ?>
 
-<div class="container coordinator-dashboard-container">
+<div class="container" style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
     <?php if ($coordinator['coordinator_status'] === 'pending'): ?>
         <!-- Pending Approval -->
-        <div class="coordinator-dashboard-pending-status">
-            <h1>⏳ Application Under Review</h1>
-            <p class="coordinator-dashboard-pending-subtitle">
+        <div class="card" style="text-align: center; padding: 2.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--warning);">⏳</div>
+            <h1 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Application Under Review</h1>
+            <p style="color: var(--gray-600); font-size: 1rem; margin-bottom: 1.5rem;">
                 Your coordinator application is being reviewed by our admin team. 
                 You'll be notified once a decision is made.
             </p>
-            <div class="coordinator-dashboard-pending-details">
+            <div style="background: var(--gray-50); border-radius: 8px; padding: 1rem; color: var(--gray-700);">
                 <strong>Applied on:</strong> <?php echo date('M j, Y', strtotime($coordinator['coordinator_applied_at'])); ?>
             </div>
         </div>
         
     <?php elseif ($coordinator['coordinator_status'] === 'rejected'): ?>
         <!-- Rejected -->
-        <div class="coordinator-dashboard-rejected-status">
-            <h1>❌ Application Rejected</h1>
-            <p class="coordinator-dashboard-rejected-subtitle">
+        <div class="card" style="text-align: center; padding: 2.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+            <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--danger);">❌</div>
+            <h1 style="color: var(--primary); margin-bottom: 1rem; font-size: 1.5rem;">Application Rejected</h1>
+            <p style="color: var(--gray-600); font-size: 1rem; margin-bottom: 1.5rem;">
                 Unfortunately, your coordinator application was not approved.
             </p>
             <?php if ($coordinator['admin_notes']): ?>
-                <div class="coordinator-dashboard-rejected-details">
-                    <strong>Admin Notes:</strong><br>
-                    <?php echo nl2br($coordinator['admin_notes']); ?>
+                <div style="background: var(--gray-50); border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; text-align: left;">
+                    <strong style="color: var(--primary);">Admin Notes:</strong><br>
+                    <span style="color: var(--gray-700);"><?php echo nl2br($coordinator['admin_notes']); ?></span>
                 </div>
             <?php endif; ?>
-            <div class="coordinator-dashboard-rejected-actions">
-                <a href="reapply.php" class="btn coordinator-dashboard-rejected-reapply-btn">
-                    Apply Again
-                </a>
-            </div>
+            <a href="reapply.php" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                Apply Again
+            </a>
         </div>
         
     <?php else: ?>
         <!-- Approved Coordinator Dashboard -->
-        <h1>🎯 Coordinator Dashboard</h1>
-        <p class="coordinator-dashboard-welcome">Welcome back, <?php echo $coordinator['name']; ?>!</p>
+        <div style="margin-bottom: 2rem;">
+            <h1 style="color: var(--primary); font-size: 1.75rem; margin-bottom: 0.5rem;">Coordinator Dashboard</h1>
+            <p style="color: var(--gray-600); font-size: 1rem;">Welcome back, <?php echo $coordinator['name']; ?>!</p>
+        </div>
         
         <!-- Statistics Cards -->
-        <div class="admin-stats">
-            <div class="admin-card">
-                <div class="icon coordinator-dashboard-stats-icon">⏳</div>
-                <div class="number"><?php echo number_format($stats['pending_events']); ?></div>
-                <div class="label">Pending Approval</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+            <div class="card" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--warning);">⏳</div>
+                <div style="font-size: 1.75rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;"><?php echo number_format($stats['pending_events']); ?></div>
+                <div style="color: var(--gray-600); font-size: 0.9rem;">Pending Approval</div>
             </div>
             
-            <div class="admin-card">
-                <div class="icon coordinator-dashboard-stats-icon approved">✅</div>
-                <div class="number"><?php echo number_format($stats['published_events']); ?></div>
-                <div class="label">Published Events</div>
+            <div class="card" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--success);">✅</div>
+                <div style="font-size: 1.75rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;"><?php echo number_format($stats['published_events']); ?></div>
+                <div style="color: var(--gray-600); font-size: 0.9rem;">Published Events</div>
             </div>
             
-            <div class="admin-card">
-                <div class="icon coordinator-dashboard-stats-icon rejected">❌</div>
-                <div class="number"><?php echo number_format($stats['rejected_events']); ?></div>
-                <div class="label">Rejected Events</div>
+            <div class="card" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--danger);">❌</div>
+                <div style="font-size: 1.75rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;"><?php echo number_format($stats['rejected_events']); ?></div>
+                <div style="color: var(--gray-600); font-size: 0.9rem;">Rejected Events</div>
             </div>
             
-            <div class="admin-card">
-                <div class="icon coordinator-dashboard-stats-icon revenue">💰</div>
-                <div class="number">LKR <?php echo number_format(($stats['total_revenue'] ?: 0) / 100, 2); ?></div>
-                <div class="label">Total Revenue</div>
+            <div class="card" style="text-align: center; padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent);">💰</div>
+                <div style="font-size: 1.75rem; font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;">LKR <?php echo number_format(($stats['total_revenue'] ?: 0) / 100, 2); ?></div>
+                <div style="color: var(--gray-600); font-size: 0.9rem;">Total Revenue</div>
             </div>
         </div>
         
         <!-- Quick Actions -->
-        <div class="admin-section">
-            <h2>⚡ Quick Actions</h2>
-            <div class="coordinator-dashboard-actions">
-                <a href="event_create.php" class="coordinator-dashboard-action-card">
-                    <div class="admin-card">
-                        <div class="icon coordinator-dashboard-action-icon">➕</div>
-                        <h4>Create New Event</h4>
-                        <p class="coordinator-dashboard-action-description">Submit event for admin approval</p>
+        <div style="margin-bottom: 2.5rem;">
+            <h2 style="color: var(--primary); font-size: 1.25rem; margin-bottom: 1.5rem; font-weight: 600;">Quick Actions</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                <a href="event_create.php" style="text-decoration: none; color: inherit;">
+                    <div class="card" style="padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid var(--success); transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem; color: var(--success);">➕</div>
+                            <div>
+                                <h4 style="color: var(--primary); margin: 0 0 0.25rem 0; font-size: 1rem;">Create New Event</h4>
+                                <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">Submit event for admin approval</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
                 
-                <a href="events_list.php" class="coordinator-dashboard-action-card events">
-                    <div class="admin-card">
-                        <div class="icon coordinator-dashboard-action-icon events">📋</div>
-                        <h4>My Events</h4>
-                        <p class="coordinator-dashboard-action-description">Manage your events</p>
+                <a href="events_list.php" style="text-decoration: none; color: inherit;">
+                    <div class="card" style="padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid var(--accent); transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem; color: var(--accent);">📋</div>
+                            <div>
+                                <h4 style="color: var(--primary); margin: 0 0 0.25rem 0; font-size: 1rem;">My Events</h4>
+                                <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">Manage your events</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
                 
-                <a href="profile.php" class="coordinator-dashboard-action-card profile">
-                    <div class="admin-card">
-                        <div class="icon coordinator-dashboard-action-icon profile">👤</div>
-                        <h4>My Profile</h4>
-                        <p class="coordinator-dashboard-action-description">Update profile settings</p>
+                <a href="profile.php" style="text-decoration: none; color: inherit;">
+                    <div class="card" style="padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid var(--primary); transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem; color: var(--primary);">👤</div>
+                            <div>
+                                <h4 style="color: var(--primary); margin: 0 0 0.25rem 0; font-size: 1rem;">My Profile</h4>
+                                <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">Update profile settings</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
                 
-                <a href="../archived_events.php" class="coordinator-dashboard-action-card archived">
-                    <div class="admin-card">
-                        <div class="icon coordinator-dashboard-action-icon archived">🗄️</div>
-                        <h4>Archived Events</h4>
-                        <p class="coordinator-dashboard-action-description">View archived events</p>
-                    </div>
-                </a>
-                
-                <a href="profile.php" class="coordinator-dashboard-action-card profile-alt">
-                    <div class="admin-card">
-                        <div class="icon coordinator-dashboard-action-icon profile-alt">👤</div>
-                        <h4>Profile Settings</h4>
-                        <p class="coordinator-dashboard-action-description">Update your information</p>
+                <a href="../archived_events.php" style="text-decoration: none; color: inherit;">
+                    <div class="card" style="padding: 1.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 4px solid var(--gray-500); transition: transform 0.2s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 2rem; color: var(--gray-500);">🗄️</div>
+                            <div>
+                                <h4 style="color: var(--primary); margin: 0 0 0.25rem 0; font-size: 1rem;">Archived Events</h4>
+                                <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">View archived events</p>
+                            </div>
+                        </div>
                     </div>
                 </a>
             </div>
         </div>
         
         <!-- Recent Events -->
-        <div class="admin-section">
-            <h2>📅 Recent Events</h2>
+        <div>
+            <h2 style="color: var(--primary); font-size: 1.25rem; margin-bottom: 1.5rem; font-weight: 600;">Recent Events</h2>
             
             <?php if ($events_result && $events_result->num_rows > 0): ?>
-                <div class="coordinator-dashboard-events-table">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Event</th>
-                                <th>Date</th>
-                                <th>Approval Status</th>
-                                <th>Publish Status</th>
-                                <th>Orders</th>
-                                <th>Revenue</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($event = $events_result->fetch_assoc()): ?>
-                                <tr>
-                                    <td>
-                                        <strong><?php echo $event['title']; ?></strong><br>
-                                        <small class="coordinator-dashboard-event-venue"><?php echo $event['venue']; ?></small>
-                                    </td>
-                                    <td>
-                                        <?php echo date('M j, Y', strtotime($event['starts_at'])); ?><br>
-                                        <small class="coordinator-dashboard-event-time"><?php echo date('g:i A', strtotime($event['starts_at'])); ?></small>
-                                    </td>
-                                    <td>
-                                        <span class="status-badge status-<?php echo $event['approval_status']; ?>">
-                                            <?php echo ucfirst($event['approval_status']); ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="status-badge status-<?php echo $event['status']; ?>">
-                                            <?php echo ucfirst(str_replace('_', ' ', $event['status'])); ?>
-                                        </span>
-                                    </td>
-                                    <td><?php echo number_format($event['orders_count']); ?></td>
-                                    <td>LKR <?php echo number_format(($event['revenue'] ?: 0) / 100, 2); ?></td>
-                                    <td>
-                                        <a href="event_edit.php?id=<?php echo $event['id']; ?>" class="btn btn-sm coordinator-dashboard-event-edit-btn">Edit</a>
-                                    </td>
+                <div class="card" style="background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: var(--gray-50);">
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Event</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Date</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Approval</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Status</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Orders</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Revenue</th>
+                                    <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--gray-200);">Actions</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php while ($event = $events_result->fetch_assoc()): ?>
+                                    <tr style="border-bottom: 1px solid var(--gray-100);">
+                                        <td style="padding: 1rem;">
+                                            <div style="font-weight: 600; color: var(--primary); margin-bottom: 0.25rem;"><?php echo $event['title']; ?></div>
+                                            <div style="font-size: 0.875rem; color: var(--gray-600);"><?php echo $event['venue']; ?></div>
+                                        </td>
+                                        <td style="padding: 1rem;">
+                                            <div style="color: var(--primary); font-weight: 500;"><?php echo date('M j, Y', strtotime($event['starts_at'])); ?></div>
+                                            <div style="font-size: 0.875rem; color: var(--gray-600);"><?php echo date('g:i A', strtotime($event['starts_at'])); ?></div>
+                                        </td>
+                                        <td style="padding: 1rem;">
+                                            <?php
+                                            $approval_color = $event['approval_status'] === 'approved' ? 'var(--success)' : 
+                                                            ($event['approval_status'] === 'rejected' ? 'var(--danger)' : 'var(--warning)');
+                                            ?>
+                                            <span style="background: <?php echo $approval_color; ?>; color: var(--white); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+                                                <?php echo ucfirst($event['approval_status']); ?>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 1rem;">
+                                            <?php
+                                            $status_color = $event['status'] === 'published' ? 'var(--accent)' : 'var(--gray-500)';
+                                            ?>
+                                            <span style="background: <?php echo $status_color; ?>; color: var(--white); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+                                                <?php echo ucfirst(str_replace('_', ' ', $event['status'])); ?>
+                                            </span>
+                                        </td>
+                                        <td style="padding: 1rem; color: var(--primary); font-weight: 600;"><?php echo number_format($event['orders_count']); ?></td>
+                                        <td style="padding: 1rem; color: var(--success); font-weight: 600;">LKR <?php echo number_format(($event['revenue'] ?: 0) / 100, 2); ?></td>
+                                        <td style="padding: 1rem;">
+                                            <a href="event_edit.php?id=<?php echo $event['id']; ?>" class="btn btn-sm btn-outline" style="font-size: 0.75rem; padding: 0.25rem 0.75rem;">Edit</a>
+                                        </td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             <?php else: ?>
-                <div class="coordinator-dashboard-no-events">
-                    <div class="coordinator-dashboard-no-events-icon">📅</div>
-                    <h3>No Events Yet</h3>
-                    <p>Start by creating your first event!</p>
+                <div class="card" style="text-align: center; padding: 2.5rem; background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--gray-400);">📅</div>
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">No Events Yet</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 1.5rem;">Start by creating your first event!</p>
                     <a href="event_create.php" class="btn btn-primary">Create Event</a>
                 </div>
             <?php endif; ?>

@@ -33,7 +33,7 @@ $tickets_result = $conn->query($tickets_sql);
 
 <link rel="stylesheet" href="assets/css/event_view.css">
 <script src="assets/js/countdown.js"></script>
-?>
+
 
 <!-- Event Hero Section -->
 <section class="event-hero" style="background-image: url('<?php echo $event['image_path'] && file_exists($event['image_path']) ? $BASE_URL . $event['image_path'] : $BASE_URL . 'assets/img/header-bg.svg'; ?>');">

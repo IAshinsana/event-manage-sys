@@ -16,12 +16,18 @@ if ($type === 'group' && $order_id) {
             JOIN orders o ON oi.order_id = o.id 
             JOIN ticket_types tt ON oi.ticket_type_id = tt.id 
             JOIN events e ON o.event_id = e.id 
-            WHERE o.id = $order_id AND o.user_id = " . $_SESSION['user_id'] . " AND o.status = 'paid' 
+            WHERE o.id = ? AND o.user_id = ? AND o.status = 'paid' 
             ORDER BY a.id ASC";
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $order_id, $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
     if (!$result || $result->num_rows === 0) {
-        die('Ticket not found or access denied');
+        die('<div style="text-align:center; padding:2rem; font-family: Arial;">
+            <h3>Ticket not found or access denied</h3>
+            <p><a href="tickets_my.php">← Back to My Tickets</a></p>
+            </div>');
     }
     
     $tickets = [];
@@ -31,7 +37,7 @@ if ($type === 'group' && $order_id) {
     $main_ticket = $tickets[0];
     
 } else if ($ticket_id) {
-    // Individual ticket print
+    // Individual ticket print - Use exact same query as tickets_my.php
     $sql = "SELECT a.*, oi.*, tt.name as ticket_name, o.id as order_id, 
             e.title as event_title, e.starts_at, e.venue, e.organizer 
             FROM attendees a 
@@ -39,17 +45,27 @@ if ($type === 'group' && $order_id) {
             JOIN orders o ON oi.order_id = o.id 
             JOIN ticket_types tt ON oi.ticket_type_id = tt.id 
             JOIN events e ON o.event_id = e.id 
-            WHERE a.id = $ticket_id AND o.user_id = " . $_SESSION['user_id'] . " AND o.status = 'paid'";
-    $result = $conn->query($sql);
+            WHERE a.id = ? AND o.user_id = ? AND o.status = 'paid'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $ticket_id, $_SESSION['user_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
     
     if (!$result || $result->num_rows === 0) {
-        die('Ticket not found or access denied');
+        die('<div style="text-align:center; padding:2rem; font-family: Arial;">
+            <h3>Ticket not found or access denied</h3>
+            <p>Please make sure you own this ticket and the order is paid.</p>
+            <p><a href="tickets_my.php">← Back to My Tickets</a></p>
+            </div>');
     }
     
     $main_ticket = $result->fetch_assoc();
     
 } else {
-    die('Invalid request');
+    die('<div style="text-align:center; padding:2rem; font-family: Arial;">
+        <h3>Invalid request</h3>
+        <p><a href="tickets_my.php">← Back to My Tickets</a></p>
+        </div>');
 }
 ?>
 <!DOCTYPE html>
@@ -57,214 +73,155 @@ if ($type === 'group' && $order_id) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Ticket - <?php echo $main_ticket['event_title']; ?></title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        
-        .ticket {
-            background: white;
-            max-width: 600px;
-            margin: 0 auto;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 2px dashed #ddd;
-        }
-        
-        .ticket-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-        
-        .ticket-body {
-            padding: 2rem;
-        }
-        
-        .event-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-        
-        .event-date {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .ticket-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .info-section h4 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-        
-        .info-section p {
-            color: #666;
-            margin-bottom: 0.25rem;
-        }
-        
-        .ticket-code-section {
-            text-align: center;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .ticket-code {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-            letter-spacing: 3px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .code-label {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .attendees-list {
-            margin-top: 1rem;
-        }
-        
-        .attendee-item {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .attendee-item:last-child {
-            border-bottom: none;
-        }
-        
-        .footer-note {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            padding-top: 1rem;
-        }
-        
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .ticket {
-                box-shadow: none;
-                border: 2px solid #ddd;
-            }
-        }
-        
-        .no-print {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        @media print {
-            .no-print {
-                display: none;
-            }
-        }
-    </style>
+    <title>Event Ticket - <?php echo htmlspecialchars($main_ticket['event_title']); ?></title>
 </head>
-<body>
-    <div class="no-print">
-        <button onclick="window.print()" style="padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5;">
+    
+    <!-- Print buttons (hidden when printing) -->
+    <div style="text-align: center; margin-bottom: 20px;" class="no-print">
+        <button onclick="window.print()" style="padding: 10px 20px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-right: 10px; font-size: 14px;">
             🖨️ Print Ticket
         </button>
-        <button onclick="window.close()" style="padding: 0.5rem 1rem; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 0.5rem;">
-            Close
+        <button onclick="window.close()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+            ← Close
         </button>
     </div>
 
-    <div class="ticket">
-        <div class="ticket-header">
-            <div class="event-title"><?php echo $main_ticket['event_title']; ?></div>
-            <div class="event-date">
+    <!-- Ticket Container -->
+    <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 2px solid #e0e0e0;">
+        
+        <!-- Header -->
+        <div style="background: #2c3e50; color: white; padding: 30px 20px; text-align: center;">
+            <h1 style="margin: 0 0 10px 0; font-size: 24px; font-weight: bold;">
+                <?php echo htmlspecialchars($main_ticket['event_title']); ?>
+            </h1>
+            <div style="font-size: 16px; opacity: 0.9;">
                 <?php echo date('l, F j, Y', strtotime($main_ticket['starts_at'])); ?><br>
                 <?php echo date('g:i A', strtotime($main_ticket['starts_at'])); ?>
             </div>
         </div>
         
-        <div class="ticket-body">
-            <div class="ticket-info">
-                <div class="info-section">
-                    <h4>📍 Venue</h4>
-                    <p><?php echo $main_ticket['venue'] ?: 'TBA'; ?></p>
-                    
-                    <?php if ($main_ticket['organizer']): ?>
-                        <h4 style="margin-top: 1rem;">👥 Organizer</h4>
-                        <p><?php echo $main_ticket['organizer']; ?></p>
-                    <?php endif; ?>
-                </div>
-                
-                <div class="info-section">
-                    <h4>🎫 Ticket Type</h4>
-                    <p><?php echo $main_ticket['ticket_name']; ?></p>
-                    
-                    <h4 style="margin-top: 1rem;">📋 Order</h4>
-                    <p>#<?php echo $main_ticket['order_id']; ?></p>
-                </div>
-            </div>
+        <!-- Body -->
+        <div style="padding: 30px;">
             
-            <div class="ticket-code-section">
-                <div class="ticket-code"><?php echo $main_ticket['ticket_code']; ?></div>
-                <div class="code-label">
+            <!-- Event Info -->
+            <table style="width: 100%; margin-bottom: 25px; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 8px 0; width: 50%; vertical-align: top;">
+                        <strong style="color: #2c3e50; font-size: 14px;">📍 Venue:</strong><br>
+                        <span style="color: #666; font-size: 14px;">
+                            <?php echo htmlspecialchars($main_ticket['venue'] ?: 'TBA'); ?>
+                        </span>
+                    </td>
+                    <td style="padding: 8px 0; width: 50%; vertical-align: top;">
+                        <strong style="color: #2c3e50; font-size: 14px;">📋 Order ID:</strong><br>
+                        <span style="color: #666; font-size: 14px;">#<?php echo $main_ticket['order_id']; ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 8px 0; vertical-align: top;">
+                        <strong style="color: #2c3e50; font-size: 14px;">🎫 Ticket Type:</strong><br>
+                        <span style="color: #666; font-size: 14px;">
+                            <?php echo htmlspecialchars($main_ticket['ticket_name']); ?>
+                        </span>
+                    </td>
+                    <?php if ($main_ticket['organizer']): ?>
+                    <td style="padding: 8px 0; vertical-align: top;">
+                        <strong style="color: #2c3e50; font-size: 14px;">👥 Organizer:</strong><br>
+                        <span style="color: #666; font-size: 14px;">
+                            <?php echo htmlspecialchars($main_ticket['organizer']); ?>
+                        </span>
+                    </td>
+                    <?php endif; ?>
+                </tr>
+            </table>
+            
+            <!-- Ticket Code -->
+            <div style="text-align: center; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 25px;">
+                <div style="font-family: 'Courier New', monospace; font-size: 28px; font-weight: bold; color: #2c3e50; letter-spacing: 3px; margin-bottom: 8px;">
+                    <?php echo htmlspecialchars($main_ticket['ticket_code']); ?>
+                </div>
+                <div style="color: #666; font-size: 12px;">
                     <?php if ($type === 'group'): ?>
                         Group Ticket Code (Valid for <?php echo count($tickets); ?> attendees)
                     <?php else: ?>
-                        Ticket Code
+                        Ticket Verification Code
                     <?php endif; ?>
                 </div>
             </div>
             
+            <!-- Attendee Information -->
             <?php if ($type === 'group'): ?>
-                <div class="info-section">
-                    <h4>👥 Attendees (<?php echo count($tickets); ?> people)</h4>
-                    <div class="attendees-list">
-                        <?php foreach ($tickets as $index => $ticket): ?>
-                            <div class="attendee-item">
-                                <strong><?php echo ($index + 1) . '. ' . $ticket['full_name']; ?></strong>
-                                <div style="font-size: 0.9rem; color: #666;">
-                                    <?php echo $ticket['ticket_name']; ?> • <?php echo $ticket['email']; ?>
-                                </div>
+                <div style="margin-bottom: 25px;">
+                    <strong style="color: #2c3e50; font-size: 14px; display: block; margin-bottom: 15px;">
+                        👥 Attendees (<?php echo count($tickets); ?> people):
+                    </strong>
+                    <?php foreach ($tickets as $index => $ticket): ?>
+                        <div style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; <?php echo $index == count($tickets)-1 ? 'border-bottom: none;' : ''; ?>">
+                            <strong style="color: #333; font-size: 14px;">
+                                <?php echo ($index + 1) . '. ' . htmlspecialchars($ticket['full_name']); ?>
+                            </strong>
+                            <div style="font-size: 12px; color: #666; margin-top: 3px;">
+                                <?php echo htmlspecialchars($ticket['ticket_name']); ?> • <?php echo htmlspecialchars($ticket['email']); ?>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             <?php else: ?>
-                <div class="info-section">
-                    <h4>👤 Attendee</h4>
-                    <p><strong><?php echo $main_ticket['full_name']; ?></strong></p>
-                    <p><?php echo $main_ticket['email']; ?></p>
+                <div style="margin-bottom: 25px;">
+                    <strong style="color: #2c3e50; font-size: 14px; display: block; margin-bottom: 10px;">
+                        👤 Attendee Information:
+                    </strong>
+                    <div style="font-size: 14px; color: #333; margin-bottom: 5px;">
+                        <strong><?php echo htmlspecialchars($main_ticket['full_name']); ?></strong>
+                    </div>
+                    <div style="font-size: 14px; color: #666;">
+                        <?php echo htmlspecialchars($main_ticket['email']); ?>
+                    </div>
                 </div>
             <?php endif; ?>
             
-            <div class="footer-note">
-                <p>Present this ticket at the event entrance for admission.</p>
-                <p>EventTickets • Generated on <?php echo date('F j, Y g:i A'); ?></p>
+            <!-- Footer -->
+            <div style="text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #666; font-size: 12px;">
+                <div style="margin-bottom: 8px;">
+                    Present this ticket at the event entrance for admission.
+                </div>
+                <div>
+                    <strong>TicketGate</strong> • Generated on <?php echo date('F j, Y g:i A'); ?>
+                </div>
             </div>
+            
         </div>
     </div>
+    
+    <!-- Print Styles -->
+    <style>
+        @media print {
+            body {
+                background-color: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        
+        .no-print {
+            display: block;
+        }
+        
+        @media screen and (max-width: 600px) {
+            body {
+                padding: 10px !important;
+            }
+        }
+    </style>
+    
 </body>
 </html>

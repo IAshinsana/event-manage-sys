@@ -15,7 +15,9 @@ include_once 'auth.php';
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="<?php echo $BASE_URL; ?>index.php" class="brand">EventTickets</a>
+            <a href="<?php echo $BASE_URL; ?>index.php" class="brand">
+                <img src="<?php echo $BASE_URL; ?>assets/img/logo.png" alt="TicketGateLogo"/>
+            </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
                 <svg viewBox="0 0 24 24">
@@ -29,7 +31,6 @@ include_once 'auth.php';
                 <?php if (is_logged_in()): ?>
                     <li><a href="<?php echo $BASE_URL; ?>orders_my.php">My Orders</a></li>
                     <li><a href="<?php echo $BASE_URL; ?>tickets_my.php">My Tickets</a></li>
-                    <li><a href="<?php echo $BASE_URL; ?>my_waitlist.php">My Waitlist</a></li>
                     <?php if (is_admin()): ?>
                         <li><a href="<?php echo $BASE_URL; ?>admin/index.php">Admin</a></li>
                     <?php endif; ?>
@@ -46,7 +47,7 @@ include_once 'auth.php';
             
             <div class="nav-buttons" id="navButtons">
                 <?php if (is_logged_in()): ?>
-                    <span style="color: white; margin-right: 1rem;">Hello, <?php echo $_SESSION['name']; ?></span>
+                    <span style="color: var(--gray-600); margin-right: 1rem; font-weight: 500;">Hello, <?php echo $_SESSION['name']; ?></span>
                     <a href="<?php echo $BASE_URL; ?>logout.php" class="btn btn-outline-light">Logout</a>
                 <?php else: ?>
                     <a href="<?php echo $BASE_URL; ?>register.php" class="btn btn-outline-light">Register</a>

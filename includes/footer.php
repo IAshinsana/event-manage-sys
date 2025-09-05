@@ -7,7 +7,7 @@
                 <a href="<?php echo $BASE_URL; ?>help.php">Help</a>
             </div>
             <div class="footer-brand">
-                © 2025 EventTickets - Simple ticketing made easy
+                © 2025 TicketGate- Simple ticketing made easy
             </div>
         </div>
     </footer>

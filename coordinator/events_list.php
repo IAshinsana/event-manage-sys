@@ -358,9 +358,6 @@ $events_result = $conn->query($events_sql);
                             <a href="tickets_manage.php?event_id=<?php echo $event['id']; ?>" class="btn-modern btn-success-modern">
                                 🎫 Manage Tickets
                             </a>
-                            <a href="waitlist_manage.php?event_id=<?php echo $event['id']; ?>" class="btn-modern btn-warning-modern">
-                                📋 Manage Waitlist
-                            </a>
                             <a href="../checkin.php?event_id=<?php echo $event['id']; ?>" class="btn-modern btn-info-modern">
                                 ✅ Check-in Portal
                             </a>

@@ -1,10 +1,6 @@
 <?php
 $page_title = "Apply as Event Coordinator";
 include 'includes/header.php';
-include 'includes/db.php';
-?>
-<link rel="stylesheet" href="assets/css/coordinator_register.css">
-<?php
 
 // Redirect if already logged in
 if (is_logged_in()) {
@@ -23,248 +19,142 @@ if (is_logged_in()) {
     }
 }
 
-$error_message = '';
-$success_message = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $organization_name = trim($_POST['organization_name'] ?? '');
-    $organization_type = trim($_POST['organization_type'] ?? '');
-    $experience_years = (int)($_POST['experience_years'] ?? 0);
-    $previous_events = trim($_POST['previous_events'] ?? '');
-    $motivation = trim($_POST['motivation'] ?? '');
-    $website = trim($_POST['website'] ?? '');
-    $social_media = trim($_POST['social_media'] ?? '');
-    
-    // Validation
-    if (empty($name) || empty($username) || empty($password) || empty($email) || 
-        empty($phone) || empty($organization_name) || empty($organization_type) || empty($motivation)) {
-        $error_message = "Please fill in all required fields.";
-    } elseif ($password !== $confirm_password) {
-        $error_message = "Passwords do not match.";
-    } elseif (strlen($password) < 6) {
-        $error_message = "Password must be at least 6 characters long.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error_message = "Please enter a valid email address.";
-    } else {
-        // Check if username or email already exists
-        $check_sql = "SELECT id FROM users WHERE username = ? OR email = ?";
-        $stmt = $conn->prepare($check_sql);
-        $stmt->bind_param("ss", $username, $email);
-        $stmt->execute();
-        
-        if ($stmt->get_result()->num_rows > 0) {
-            $error_message = "Username or email already exists.";
-        } else {
-            // Create user account (store password in raw format)
-            
-            $conn->begin_transaction();
-            try {
-                // Insert user
-                $user_sql = "INSERT INTO users (name, username, password, role, email, phone, organization, coordinator_status, coordinator_applied_at) 
-                            VALUES (?, ?, ?, 'coordinator', ?, ?, ?, 'pending', NOW())";
-                $stmt = $conn->prepare($user_sql);
-                $stmt->bind_param("ssssss", $name, $username, $password, $email, $phone, $organization_name);
-                $stmt->execute();
-                
-                $user_id = $conn->insert_id;
-                
-                // Insert coordinator application
-                $app_sql = "INSERT INTO coordinator_applications 
-                           (user_id, organization_name, organization_type, experience_years, previous_events, 
-                            motivation, contact_email, contact_phone, website, social_media) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $stmt = $conn->prepare($app_sql);
-                $stmt->bind_param("ississssss", $user_id, $organization_name, $organization_type, 
-                                $experience_years, $previous_events, $motivation, $email, $phone, 
-                                $website, $social_media);
-                $stmt->execute();
-                
-                $conn->commit();
-                $success_message = "Application submitted successfully! Please wait for admin approval.";
-                
-            } catch (Exception $e) {
-                $conn->rollback();
-                $error_message = "Error submitting application. Please try again.";
-            }
-        }
-    }
-}
 ?>
 
-<div class="container coordinator-register-container">
-    <div class="coordinator-register-wrapper">
-        
-        <!-- Header -->
-        <div class="coordinator-register-header">
-            <h1 class="coordinator-register-title">🎯 Coordinator Application</h1>
-            <p class="coordinator-register-subtitle">Join our platform to organize amazing events</p>
-        </div>
-        
-        <?php if ($error_message): ?>
-            <div class="coordinator-register-error">
-                <?php echo $error_message; ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if ($success_message): ?>
-            <div class="coordinator-register-success">
-                <div class="coordinator-register-success-icon">✅</div>
-                <?php echo $success_message; ?>
-                <div class="coordinator-register-success-actions">
-                    <a href="login.php" class="btn btn-success">Login to Check Status</a>
-                </div>
-            </div>
-        <?php else: ?>
-        
-        <!-- Form Container -->
-        <div class="coordinator-register-form">
+
+
+<div class="container" style="max-width: 700px; margin: 2rem auto; padding: 0 1rem;">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <h1 style="font-size: 1.75rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 600;">Apply as Event Coordinator</h1>
+        <p style="color: var(--gray-600); font-size: 0.95rem;">Join our platform to organize amazing events</p>
+    </div>
+    
+    <!-- Messages -->
+    <div id="errId" class="mb-3"></div>
+    
+    <div id="succ" class="d-none" style="background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 2.5rem; text-align: center; margin-bottom: 2rem;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+        <h3 style="color: var(--success); margin-bottom: 1rem;">Application Submitted!</h3>
+        <p style="color: var(--gray-600); margin-bottom: 1.5rem;">We'll review your application and notify you via email.</p>
+        <a href="login.php?msg=reg_succuss" class="btn btn-success">Login to Check Status</a>
+    </div>
+    
+    <!-- Form -->
+    <div style="background: var(--white); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 2.5rem;">
+        <!-- Account Setup -->
+        <div style="margin-bottom: 2.5rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                <span>👤</span> Account Setup
+            </h3>
             
-            <form method="POST">
-                
-                <!-- Account Setup -->
-                <div class="coordinator-register-section">
-                    <h3 class="coordinator-register-section-title">
-                        <span>👤</span> Account Setup
-                    </h3>
-                    
-                    <div class="coordinator-register-form-row">
-                        <div>
-                            <label class="form-label">Full Name</label>
-                            <input type="text" name="name" required class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>"
-                                   placeholder="Your full name">
-                        </div>
-                        <div>
-                            <label class="form-label">Username</label>
-                            <input type="text" name="username" required class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
-                                   placeholder="Choose username">
-                        </div>
-                    </div>
-                    
-                    <div class="coordinator-register-form-row">
-                        <div>
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" required minlength="6" class="form-input"
-                                   placeholder="Minimum 6 characters">
-                        </div>
-                        <div>
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" name="confirm_password" required class="form-input"
-                                   placeholder="Repeat password">
-                        </div>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div>
-                            <label class="form-label">Email Address</label>
-                            <input type="email" name="email" required class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>"
-                                   placeholder="your@email.com">
-                        </div>
-                        <div>
-                            <label class="form-label">Phone Number</label>
-                            <input type="tel" name="phone" required pattern="[0-9]{10}" class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['phone'] ?? ''); ?>"
-                                   placeholder="0771234567">
-                        </div>
-                    </div>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name *</label>
+                    <input id="fullName" type="text" required class="form-control" placeholder="Your full name" style="margin-bottom: 0.5rem;">
                 </div>
-                
-                <hr class="coordinator-register-divider">
-                
-                <!-- Organization Details -->
-                <div class="coordinator-register-section">
-                    <h3 class="coordinator-register-section-title business">
-                        <span>🏢</span> Organization Details
-                    </h3>
-                    
-                    <div class="coordinator-register-form-row three-col">
-                        <div>
-                            <label class="form-label">Organization Name</label>
-                            <input type="text" name="organization_name" required class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['organization_name'] ?? ''); ?>"
-                                   placeholder="Company/Organization name">
-                        </div>
-                        <div>
-                            <label class="form-label">Type</label>
-                            <select name="organization_type" required class="form-input">
-                                <option value="">Select Type</option>
-                                <option value="company" <?php echo ($_POST['organization_type'] ?? '') === 'company' ? 'selected' : ''; ?>>Company</option>
-                                <option value="ngo" <?php echo ($_POST['organization_type'] ?? '') === 'ngo' ? 'selected' : ''; ?>>NGO</option>
-                                <option value="educational" <?php echo ($_POST['organization_type'] ?? '') === 'educational' ? 'selected' : ''; ?>>Educational</option>
-                                <option value="government" <?php echo ($_POST['organization_type'] ?? '') === 'government' ? 'selected' : ''; ?>>Government</option>
-                                <option value="freelancer" <?php echo ($_POST['organization_type'] ?? '') === 'freelancer' ? 'selected' : ''; ?>>Freelancer</option>
-                                <option value="other" <?php echo ($_POST['organization_type'] ?? '') === 'other' ? 'selected' : ''; ?>>Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="form-label">Experience (Years)</label>
-                            <input type="number" name="experience_years" min="0" max="50" class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['experience_years'] ?? '0'); ?>"
-                                   placeholder="0">
-                        </div>
-                    </div>
-                    
-                    <div class="coordinator-register-form-row">
-                        <div>
-                            <label class="form-label">Website (Optional)</label>
-                            <input type="url" name="website" class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['website'] ?? ''); ?>"
-                                   placeholder="https://yourwebsite.com">
-                        </div>
-                        <div>
-                            <label class="form-label">Social Media (Optional)</label>
-                            <input type="text" name="social_media" class="form-input"
-                                   value="<?php echo htmlspecialchars($_POST['social_media'] ?? ''); ?>"
-                                   placeholder="@username or links">
-                        </div>
-                    </div>
+                <div class="col-md-6">
+                    <label class="form-label">Username *</label>
+                    <input type="text" id="username" required class="form-control" placeholder="Choose username" style="margin-bottom: 0.5rem;">
                 </div>
-                
-                <hr class="coordinator-register-divider">
-                
-                <!-- Experience & Goals -->
-                <div class="coordinator-register-section">
-                    <h3 class="coordinator-register-section-title experience">
-                        <span>💭</span> Experience & Goals
-                    </h3>
-                    
-                    <div class="coordinator-register-description">
-                        <label class="form-label">Previous Events (Optional)</label>
-                        <textarea name="previous_events" rows="3" class="form-input"
-                                  placeholder="Briefly describe any events you've organized before..."><?php echo htmlspecialchars($_POST['previous_events'] ?? ''); ?></textarea>
-                    </div>
-                    
-                    <div>
-                        <label class="form-label">Why do you want to be a coordinator?</label>
-                        <textarea name="motivation" rows="4" required class="form-input"
-                                  placeholder="Tell us about your motivation, goals, and what you hope to achieve..."><?php echo htmlspecialchars($_POST['motivation'] ?? ''); ?></textarea>
-                    </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Password *</label>
+                    <input type="password" id="password" required minlength="6" class="form-control" placeholder="Minimum 6 characters" style="margin-bottom: 0.5rem;">
                 </div>
-                
-                <!-- Submit Button -->
-                <div class="coordinator-register-submit">
-                    <button type="submit" class="btn-submit">
-                        <span>📤</span> Submit Application
-                    </button>
-                    <div class="coordinator-register-login-link">
-                        <a href="login.php">
-                            Already applied? Login here
-                        </a>
-                    </div>
+                <div class="col-md-6">
+                    <label class="form-label">Confirm Password *</label>
+                    <input type="password" id="cPassword" required class="form-control" placeholder="Repeat password" style="margin-bottom: 0.5rem;">
                 </div>
-                
-            </form>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" id="email" required class="form-control" placeholder="your@email.com" style="margin-bottom: 0.5rem;">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" id="phone" required pattern="[0-9]{10}" class="form-control" placeholder="0771234567" style="margin-bottom: 0.5rem;">
+                </div>
+            </div>
         </div>
         
-        <?php endif; ?>
+        <hr style="border: none; height: 1px; background: var(--gray-200); margin: 2.5rem 0;">
+        
+        <!-- Organization Details -->
+        <div style="margin-bottom: 2.5rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                <span>🏢</span> Organization Details
+            </h3>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Organization Name *</label>
+                    <input type="text" id="organization_name" required class="form-control" placeholder="Company/Organization name" style="margin-bottom: 0.5rem;">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Organization Type *</label>
+                    <select id="organization_type" required class="form-control" style="margin-bottom: 0.5rem;">
+                        <option value="">Select Type</option>
+                        <option value="company">Company</option>
+                        <option value="ngo">NGO</option>
+                        <option value="educational">Educational</option>
+                        <option value="government">Government</option>
+                        <option value="freelancer">Freelancer</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Experience (Years)</label>
+                    <input type="number" id="experience_years" min="0" max="50" class="form-control" placeholder="0" style="margin-bottom: 0.5rem;">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Website (Optional)</label>
+                    <input type="url" id="website" class="form-control" placeholder="https://yourwebsite.com" style="margin-bottom: 0.5rem;">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Social Media (Optional)</label>
+                    <input type="text" id="social_media" class="form-control" placeholder="@username" style="margin-bottom: 0.5rem;">
+                </div>
+            </div>
+        </div>
+        
+        <hr style="border: none; height: 1px; background: var(--gray-200); margin: 2.5rem 0;">
+        
+        <!-- Experience & Goals -->
+        <div style="margin-bottom: 2rem;">
+            <h3 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                <span>💭</span> Experience & Goals
+            </h3>
+            
+            <div class="mb-4">
+                <label class="form-label">Previous Events (Optional)</label>
+                <textarea id="previous_events" rows="3" class="form-control" placeholder="Briefly describe any events you've organized before..." style="margin-bottom: 0.5rem;"></textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Why do you want to be a coordinator? *</label>
+                <textarea id="motivation" rows="4" required class="form-control" placeholder="Tell us about your motivation, goals, and what you hope to achieve..." style="margin-bottom: 0.5rem;"></textarea>
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <div style="text-align: center; padding-top: 1.5rem; border-top: 1px solid var(--gray-200);">
+            <button onclick="regCoor()" type="submit" class="btn btn-primary" style="padding: 0.75rem 2.5rem; font-weight: 600; font-size: 1rem;">
+                Submit Application
+            </button>
+            <div style="margin-top: 1.5rem;">
+                <a href="login.php" style="color: var(--gray-600); text-decoration: none; font-size: 0.9rem;">
+                    Already applied? Login here
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

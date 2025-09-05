@@ -83,22 +83,22 @@ if ($_POST) {
             <div class="form-group">
                 <label for="full_name">Full Name *</label>
                 <input type="text" id="full_name" name="full_name" class="form-control" 
-                       value="<?php echo isset($_POST['full_name']) ? $_POST['full_name'] : $_SESSION['name']; ?>" required>
+                       value="<?php echo $_SESSION['name']; ?>" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email Address *</label>
                 <input type="email" id="email" name="email" class="form-control" 
-                       value="<?php echo isset($_POST['email']) ? $_POST['email'] : ''; ?>" required>
+                       value="<?php echo $_SESSION['email']; ?>" required>
                 <small style="color: #666;">Tickets will be sent to this email address</small>
             </div>
             
             <div class="form-group">
                 <label for="mobile">Mobile Number *</label>
                 <input type="tel" id="mobile" name="mobile" class="form-control" 
-                       value="<?php echo isset($_POST['mobile']) ? $_POST['mobile'] : ''; ?>" 
+                       value="<?php echo $_SESSION['phone']?>" 
                        placeholder="070xxxxxxx" required>
-                <small style="color: #666;">Sri Lankan mobile number (070, 071, 072, 074, 075, 076, 077, 078)</small>
+                <small style="color: #666;">Enter Sri lanka mobile number</small>
             </div>
             
             <?php if ($booking['total_tickets'] > 1): ?>
