@@ -7,7 +7,7 @@ include_once 'auth.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>EventTickets</title>
+    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>EventGate</title>
     <link rel="stylesheet" href="<?php echo $BASE_URL; ?>assets/css/style.css">
     <link rel="shortcut icon" href="/assets/icons/fav-icon.png" type="image/x-icon">
     <script src="<?php echo $BASE_URL; ?>assets/js/event-manager.js" defer></script>
@@ -16,7 +16,7 @@ include_once 'auth.php';
     <nav class="navbar">
         <div class="nav-container">
             <a href="<?php echo $BASE_URL; ?>index.php" class="brand">
-                <img src="<?php echo $BASE_URL; ?>assets/img/logo.png" alt="TicketGateLogo"/>
+                <img src="<?php echo $BASE_URL; ?>assets/img/logo.png" alt="EventGateLogo"/>
             </a>
             
             <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">

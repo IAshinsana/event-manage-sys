@@ -6,7 +6,7 @@
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */; 
 /*!50503 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
@@ -42,9 +42,7 @@ INSERT INTO `attendees` (`id`, `order_item_id`, `full_name`, `email`, `ticket_co
 	(2, 1, 'User UOC', 'ireneolsonfb@gmail.com', 'GRP1', NULL, NULL),
 	(3, 2, 'User UOC', 'ireneolsonfb@gmail.com', 'GA9HM7K6', '2025-08-21 22:30:40', 1),
 	(4, 3, 'Supun Sanketh', 'lasithperera2004@gmail.com', 'GRPPYRUB', NULL, NULL),
-	(5, 5, 'Supun Sanketh', 'lasithperera2004@gmail.com', 'GRP86Y25', NULL, NULL),
-	(6, 5, 'Samantha', 'sdsdsdsdsdsd@gmail.com', 'FZDWJUIS', '2025-09-05 11:35:13', 3),
-	(7, 6, 'Samantha', 'sdsdsdsdsdsd@gmail.com', '42QG1MPY', '2025-09-05 11:35:19', 3);
+	(5, 5, 'Supun Sanketh', 'lasithperera2004@gmail.com', 'GRP86Y25', NULL, NULL);
 
 -- Dumping structure for table event_v2.categories
 CREATE TABLE IF NOT EXISTS `categories` (

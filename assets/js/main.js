@@ -143,6 +143,7 @@ function login() {
 
         }
     }
+    
 
     req.open("POST", "proccess/login_proc.php");
     req.send(newForm);

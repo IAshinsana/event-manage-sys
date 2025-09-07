@@ -187,7 +187,7 @@ if ($type === 'group' && $order_id) {
                     Present this ticket at the event entrance for admission.
                 </div>
                 <div>
-                    <strong>TicketGate</strong> • Generated on <?php echo date('F j, Y g:i A'); ?>
+                    <strong>EventGate</strong> • Generated on <?php echo date('F j, Y g:i A'); ?>
                 </div>
             </div>
             

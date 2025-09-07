@@ -171,7 +171,7 @@ $result = $conn->query($sql);
                     </p>
                     <div class="alert alert-info" style="text-align: left; margin-top: 2rem;">
                         <strong>💡 Tip:</strong> New events are added regularly. 
-                        <a href="mailto:info@eventtickets.com" style="color: var(--accent); text-decoration: none;">Contact us</a> if you'd like to organize an event!
+                        <a href="mailto:info@EventGate.com" style="color: var(--accent); text-decoration: none;">Contact us</a> if you'd like to organize an event!
                     </div>
                 <?php endif; ?>
             </div>

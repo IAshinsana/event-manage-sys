@@ -19,7 +19,7 @@ if (!$event_id || !$action) {
     echo "Invalid request";
     exit;
 }
-// my coments
+
 
 // Verify user has permission to manage this event
 $event_check_sql = "SELECT e.*, 0 as tickets_sold FROM events e WHERE e.id = ?";
@@ -126,12 +126,7 @@ try {
             $stmt->bind_param("i", $event_id);
             $stmt->execute();
             
-            // Skip bookings deletion as table may not exist yet
-            // $delete_bookings_sql = "DELETE FROM bookings WHERE event_id = ?";
-            // $stmt = $conn->prepare($delete_bookings_sql);
-            // $stmt->bind_param("i", $event_id);
-            // $stmt->execute();
-            
+          
             // Delete the event
             $delete_event_sql = "DELETE FROM events WHERE id = ?";
             $stmt = $conn->prepare($delete_event_sql);

@@ -3,7 +3,7 @@ $page_title = "Archived Events";
 include 'includes/header.php';
 include 'includes/db.php';
 
-// Check if user is logged in and has appropriate permissions
+// Check if user is logged
 if (!is_logged_in()) {
     header('Location: login.php');
     exit;
@@ -12,7 +12,7 @@ if (!is_logged_in()) {
 $user_role = $_SESSION['role'];
 $user_id = $_SESSION['user_id'];
 
-// Build query based on user role
+
 if ($user_role === 'admin') {
     // Admin can see all archived events
     $events_sql = "SELECT e.*, u.name as coordinator_name, u.email as coordinator_email,

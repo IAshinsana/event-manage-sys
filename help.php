@@ -8,7 +8,7 @@ include 'includes/header.php';
     
     <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 2rem;">
         <p style="font-size: 1.1rem; color: #666; text-align: center; margin-bottom: 2rem;">
-            Welcome to EventTickets! This guide will help you navigate through our event registration and ticketing system.
+            Welcome to EventGate! This guide will help you navigate through our event registration and ticketing system.
         </p>
     </div>
     

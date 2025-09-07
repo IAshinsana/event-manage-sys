@@ -38,7 +38,7 @@ class EventManager {
         const modal = this.createConfirmationModal({
             title: '🗄️ Archive Event',
             message: `Are you sure you want to archive the event "<strong>${eventTitle}</strong>"?`,
-            details: hasTicketsSold ? 
+            details: hasTicketsSold ?
                 '⚠️ <strong>Warning:</strong> This event has tickets sold. Archiving will hide it from public view but preserve all booking data.' :
                 'This event will be hidden from public view and moved to archived events.',
             confirmText: 'Yes, Archive Event',
@@ -66,7 +66,7 @@ class EventManager {
         const modal = this.createConfirmationModal({
             title: '🔄 Reactivate Event',
             message: `Are you sure you want to reactivate the event "<strong>${eventTitle}</strong>"?`,
-            details: needsApproval ? 
+            details: needsApproval ?
                 '📋 <strong>Note:</strong> As a coordinator, reactivating this event will send it for admin approval again.' :
                 'This event will be made public and available for bookings immediately.',
             confirmText: needsApproval ? 'Send for Approval' : 'Yes, Reactivate',
@@ -202,7 +202,9 @@ class EventManager {
     }
 
     async reactivateEvent(eventId, needsApproval) {
+
         try {
+            
             const response = await fetch('archive_event.php', {
                 method: 'POST',
                 headers: {
@@ -213,8 +215,8 @@ class EventManager {
 
             const result = await response.text();
             if (response.ok) {
-                const message = needsApproval ? 
-                    'Event reactivation request sent for admin approval.' : 
+                const message = needsApproval ?
+                    'Event reactivation request sent for admin approval.' :
                     'The event has been successfully reactivated.';
                 this.showAlert('✅ Success', message, 'success');
                 setTimeout(() => {
