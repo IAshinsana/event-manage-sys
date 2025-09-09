@@ -65,11 +65,11 @@ A comprehensive web-based Event Management and Ticketing System built with PHP a
 
 ## 📸 Screenshots
 
-### Homepage
+
 ![Homepage](https://github.com/user-attachments/assets/f09bc663-3c56-40ea-879b-6233f8dcbd3a)
 *Clean and modern homepage showcasing upcoming events with intuitive navigation*
 
-### Event Listings
+### Homepage
 ![Event Listings](https://github.com/user-attachments/assets/9cbca63b-8b6e-422b-8745-6fc76b96adee)
 *Comprehensive event browsing with filtering and search capabilities*
 
@@ -374,3 +374,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Made with ❤️ for the event management community**
 
 *Last updated: September 2025*
+
