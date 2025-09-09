@@ -371,7 +371,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Made with ❤️ for the event management community**
+**Made ❤️ team 22 IWT project UCSC 2025**
 
 *Last updated: September 2025*
+
 
