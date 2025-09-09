@@ -1,6 +1,14 @@
 # 🎫 EventTickets - Complete Event Management System
 
+<img width="1737" height="852" alt="image" src="https://github.com/user-attachments/assets/f09bc663-3c56-40ea-879b-6233f8dcbd3a" />
+
 A comprehensive web application for event registration, ticketing, and management built with PHP, MySQL, HTML, CSS, and JavaScript.
+
+<img width="1900" height="897" alt="front" src="https://github.com/user-attachments/assets/9cbca63b-8b6e-422b-8745-6fc76b96adee" />
+
+<img width="1892" height="892" alt="admin" src="https://github.com/user-attachments/assets/e6abf2e5-2026-4e7c-9c90-0cbc58ad0bc3" />
+
+<img width="1895" height="886" alt="add event" src="https://github.com/user-attachments/assets/da39c6ad-fa0f-4b48-8f2b-bdcdcec81432" />
 
 ## 🌟 Features
 
@@ -292,3 +300,4 @@ This is a complete, production-ready system. For enhancements:
 ---
 
 **EventTickets** - Complete Event Management Solution
+
