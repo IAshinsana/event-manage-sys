@@ -167,6 +167,12 @@ $applications_result = $conn->query($applications_sql);
                                         onclick="return confirm('Are you sure you want to reject this coordinator application?')">
                                     ❌ Reject
                                 </button>
+                                <button type="button" 
+                                        class="btn" style="background: #6c757d; color: white;"
+                                        onclick="deleteApplication(<?php echo $app['id']; ?>)"
+                                        title="Permanently delete this application">
+                                    🗑️ Delete
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -193,6 +199,17 @@ $applications_result = $conn->query($applications_sql);
                                 <div style="background: rgba(255,255,255,0.7); padding: 1rem; border-radius: 5px; margin-top: 0.5rem;">
                                     <?php echo nl2br($app['admin_notes']); ?>
                                 </div>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if ($app['status'] !== 'pending'): ?>
+                            <div style="margin-top: 1rem;">
+                                <button type="button" 
+                                        class="btn" style="background: #dc3545; color: white;"
+                                        onclick="deleteApplication(<?php echo $app['id']; ?>)"
+                                        title="Permanently delete this reviewed application">
+                                    🗑️ Delete Application
+                                </button>
                             </div>
                         <?php endif; ?>
                     </div>

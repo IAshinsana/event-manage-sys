@@ -24,7 +24,7 @@ $events_result = $conn->query($events_sql);
             <a href="index.php" class="btn btn-outline">← Dashboard</a>
         </div>
     </div>
-    
+
     <?php if ($events_result && $events_result->num_rows > 0): ?>
         <div class="admin-section">
             <div style="overflow-x: auto;">
@@ -56,9 +56,9 @@ $events_result = $conn->query($events_sql);
                                 </td>
                                 <td>
                                     <?php if ($event['image_path']): ?>
-                                        <img src="../<?php echo htmlspecialchars($event['image_path']); ?>" 
-                                             alt="Event Image" 
-                                             style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                        <img src="../<?php echo htmlspecialchars($event['image_path']); ?>"
+                                            alt="Event Image"
+                                            style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
                                     <?php else: ?>
                                         <span style="color: #999; font-size: 0.8rem;">No image</span>
                                     <?php endif; ?>
@@ -92,15 +92,34 @@ $events_result = $conn->query($events_sql);
                                 </td>
                                 <td>
                                     <div class="admin-events-actions">
-                                        <a href="../event_view.php?id=<?php echo $event['id']; ?>" class="btn btn-outline admin-events-action-btn">
-                                            View
+                                        <a href="../event_view.php?id=<?php echo $event['id']; ?>"
+                                            class="action-icon-btn"
+                                            title="View Event">
+                                            👁️
                                         </a>
-                                        <a href="event_edit.php?id=<?php echo $event['id']; ?>" class="btn btn-primary admin-events-action-btn">
-                                            Edit
+                                        <a href="event_edit.php?id=<?php echo $event['id']; ?>"
+                                            class="action-icon-btn"
+                                            title="Edit Event">
+                                            ✏️
                                         </a>
-                                        <a href="tickets_list.php?event_id=<?php echo $event['id']; ?>" class="btn btn-success admin-events-action-btn">
-                                            Tickets
+                                        <a href="tickets_list.php?event_id=<?php echo $event['id']; ?>"
+                                            class="action-icon-btn"
+                                            title="Manage Tickets">
+                                            🎫
                                         </a>
+                                        <?php if ($event['sold_tickets'] == 0): ?>
+                                            <button onclick="deleteEvent(<?php echo $event['id']; ?>, 'hard_delete')"
+                                                class="action-icon-btn delete-btn"
+                                                title="Permanently Delete Event">
+                                                🗑️
+                                            </button>
+                                        <?php else: ?>
+                                            <button onclick="deleteEvent(<?php echo $event['id']; ?>, 'soft_delete')"
+                                                class="action-icon-btn archive-btn"
+                                                title="Archive Event">
+                                                🗄️
+                                            </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

@@ -18,8 +18,20 @@ if ($user_role === 'admin') {
     $events_sql = "SELECT e.*, u.name as coordinator_name, u.email as coordinator_email,
                    COUNT(DISTINCT tt.id) as ticket_types_count,
                    COALESCE(SUM(tt.qty_total), 0) as total_tickets,
-                   0 as bookings_count,
-                   0 as revenue,
+                   COALESCE(
+                       (SELECT SUM(oi.qty) 
+                        FROM orders o 
+                        INNER JOIN order_items oi ON o.id = oi.order_id
+                        INNER JOIN ticket_types tt2 ON oi.ticket_type_id = tt2.id 
+                        WHERE tt2.event_id = e.id AND o.status = 'paid'), 0
+                   ) as bookings_count,
+                   COALESCE(
+                       (SELECT SUM(oi.qty * oi.unit_price_cents) / 100 
+                        FROM orders o 
+                        INNER JOIN order_items oi ON o.id = oi.order_id
+                        INNER JOIN ticket_types tt3 ON oi.ticket_type_id = tt3.id 
+                        WHERE tt3.event_id = e.id AND o.status = 'paid'), 0
+                   ) as revenue,
                    ua.name as archived_by_name
                    FROM events e
                    LEFT JOIN users u ON e.created_by = u.id
@@ -35,8 +47,20 @@ if ($user_role === 'admin') {
     $events_sql = "SELECT e.*, u.name as coordinator_name, u.email as coordinator_email,
                    COUNT(DISTINCT tt.id) as ticket_types_count,
                    COALESCE(SUM(tt.qty_total), 0) as total_tickets,
-                   0 as bookings_count,
-                   0 as revenue,
+                   COALESCE(
+                       (SELECT SUM(oi.qty) 
+                        FROM orders o 
+                        INNER JOIN order_items oi ON o.id = oi.order_id
+                        INNER JOIN ticket_types tt2 ON oi.ticket_type_id = tt2.id 
+                        WHERE tt2.event_id = e.id AND o.status = 'paid'), 0
+                   ) as bookings_count,
+                   COALESCE(
+                       (SELECT SUM(oi.qty * oi.unit_price_cents) / 100 
+                        FROM orders o 
+                        INNER JOIN order_items oi ON o.id = oi.order_id
+                        INNER JOIN ticket_types tt3 ON oi.ticket_type_id = tt3.id 
+                        WHERE tt3.event_id = e.id AND o.status = 'paid'), 0
+                   ) as revenue,
                    ua.name as archived_by_name
                    FROM events e
                    LEFT JOIN users u ON e.created_by = u.id
@@ -243,9 +267,9 @@ $stats = $stmt->get_result()->fetch_assoc();
                             <?php endif; ?>
                             
                             <?php if (($event['bookings_count'] ?? 0) > 0): ?>
-                                <a href="admin/bookings_list.php?event_id=<?php echo $event['id']; ?>" 
+                                <a href="admin/orders_list.php?event_id=<?php echo $event['id']; ?>" 
                                    class="btn btn-outline btn-sm">
-                                    📋 View Bookings
+                                    📋 View Orders
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -272,5 +296,33 @@ $stats = $stmt->get_result()->fetch_assoc();
     <?php endif; ?>
 </div>
 
+<!-- Include the event management scripts -->
 <script src="assets/js/event-manager.js"></script>
+
+<style>
+/* Ensure proper z-index for modals */
+.confirmation-modal-overlay {
+    z-index: 10000 !important;
+}
+
+.floating-alert {
+    z-index: 9999 !important;
+}
+
+/* Button hover effects for better UX */
+.btn-reactivate-event:hover {
+    background-color: var(--success) !important;
+    border-color: var(--success) !important;
+    color: white !important;
+    transform: translateY(-1px);
+}
+
+.btn-delete-event:hover {
+    background-color: var(--danger) !important;
+    border-color: var(--danger) !important;
+    color: white !important;
+    transform: translateY(-1px);
+}
+</style>
+
 <?php include 'includes/footer.php'; ?>

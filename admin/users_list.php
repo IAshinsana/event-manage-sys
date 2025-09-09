@@ -8,12 +8,12 @@ require_admin();
 if (isset($_POST['action']) && $_POST['action'] === 'update_role' && isset($_POST['user_id']) && isset($_POST['role'])) {
     $user_id = (int)$_POST['user_id'];
     $role = $conn->real_escape_string($_POST['role']);
-    
+
     if (in_array($role, ['ordinary', 'admin', 'checker', 'coordinator'])) {
         $update_sql = "UPDATE users SET role = ? WHERE id = ?";
         $stmt = $conn->prepare($update_sql);
         $stmt->bind_param("si", $role, $user_id);
-        
+
         if ($stmt->execute()) {
             $success_message = "User role updated successfully!";
         } else {
@@ -25,11 +25,11 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_role' && isset($_POS
 // Handle user status toggle
 if (isset($_POST['action']) && $_POST['action'] === 'toggle_status' && isset($_POST['user_id'])) {
     $user_id = (int)$_POST['user_id'];
-    
+
     $toggle_sql = "UPDATE users SET active = NOT active WHERE id = ?";
     $stmt = $conn->prepare($toggle_sql);
     $stmt->bind_param("i", $user_id);
-    
+
     if ($stmt->execute()) {
         $success_message = "User status updated successfully!";
     } else {
@@ -96,19 +96,19 @@ if (!empty($params)) {
 
 <div class="container" style="margin-top: 2rem;">
     <h1>👥 Manage Users</h1>
-    
+
     <?php if (isset($success_message)): ?>
         <div style="background: #d4edda; color: #155724; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
             <?php echo $success_message; ?>
         </div>
     <?php endif; ?>
-    
+
     <?php if (isset($error_message)): ?>
         <div style="background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
             <?php echo $error_message; ?>
         </div>
     <?php endif; ?>
-    
+
     <!-- Search and Filter Section -->
     <div class="admin-section" style="margin-bottom: 1.5rem;">
         <h3>🔍 Search & Filter Users</h3>
@@ -116,14 +116,14 @@ if (!empty($params)) {
             <div style="display: grid; grid-template-columns: 1fr 200px 150px auto; gap: 1rem; align-items: end;">
                 <div>
                     <label for="search" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Search Users:</label>
-                    <input type="text" 
-                           id="search" 
-                           name="search" 
-                           placeholder="Search by name, username, or email..." 
-                           value="<?php echo htmlspecialchars($search); ?>"
-                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text"
+                        id="search"
+                        name="search"
+                        placeholder="Search by name, username, or email..."
+                        value="<?php echo htmlspecialchars($search); ?>"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
                 </div>
-                
+
                 <div>
                     <label for="role" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Role:</label>
                     <select id="role" name="role" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
@@ -134,7 +134,7 @@ if (!empty($params)) {
                         <option value="ordinary" <?php echo $role_filter === 'ordinary' ? 'selected' : ''; ?>>Ordinary</option>
                     </select>
                 </div>
-                
+
                 <div>
                     <label for="status" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status:</label>
                     <select id="status" name="status" style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
@@ -143,7 +143,7 @@ if (!empty($params)) {
                         <option value="inactive" <?php echo $status_filter === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
                     </select>
                 </div>
-                
+
                 <div style="display: flex; gap: 0.5rem;">
                     <button type="submit" style="background: #007bff; color: white; border: none; padding: 0.75rem 1rem; border-radius: 5px; cursor: pointer;">
                         🔍 Search
@@ -153,28 +153,47 @@ if (!empty($params)) {
                     </a>
                 </div>
             </div>
-            
+
             <!-- Mobile responsive version -->
             <style>
                 @media (max-width: 768px) {
-                    .admin-section form > div {
+                    .admin-section form>div {
                         grid-template-columns: 1fr !important;
                         grid-template-rows: auto auto auto auto;
                     }
-                    
-                    .admin-section form > div > div:last-child {
+
+                    .admin-section form>div>div:last-child {
                         justify-self: center;
                         width: 100%;
                     }
-                    
-                    .admin-section form > div > div:last-child > * {
+
+                    .admin-section form>div>div:last-child>* {
                         width: 100%;
                         margin-bottom: 0.5rem;
                     }
                 }
+
+                /* Action Button Styles */
+                .action-emoji-btn:hover,
+                select[name="role"]:hover {
+                    background: #f8f9fa !important;
+                    border-color: #007bff !important;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .action-emoji-btn:active,
+                select[name="role"]:active {
+                    transform: translateY(0);
+                }
+
+                /* Clean table actions column */
+                .action-buttons {
+                    min-width: 120px;
+                }
             </style>
         </form>
-        
+
         <!-- Results Summary -->
         <div style="margin-top: 1rem; padding: 0.75rem; background: #e9ecef; border-radius: 5px;">
             <strong>Results:</strong> Showing <?php echo $users_result->num_rows; ?> of <?php echo $total_users; ?> users
@@ -194,12 +213,100 @@ if (!empty($params)) {
             <?php endif; ?>
         </div>
     </div>
-    
+
+    <!-- User Statistics & Quick Actions (moved to top for better access) -->
+    <div class="admin-section" style="margin-bottom: 1.5rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; align-items: start;">
+            <!-- User Statistics -->
+            <div>
+                <h3>📊 User Statistics</h3>
+
+                <?php
+                $stats_sql = "SELECT 
+                    role,
+                    COUNT(*) as count
+                    FROM users 
+                    GROUP BY role";
+                $stats_result = $conn->query($stats_sql);
+                $role_stats = [];
+                while ($stat = $stats_result->fetch_assoc()) {
+                    $role_stats[$stat['role']] = $stat['count'];
+                }
+                ?>
+
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem;">
+                    <div class="admin-card" style="padding: 1rem; text-align: center;">
+                        <div style="color: #28a745; font-size: 1.5rem; margin-bottom: 0.5rem;">👤</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;"><?php echo $role_stats['ordinary'] ?? 0; ?></div>
+                        <div style="font-size: 0.8rem; color: #666;">Regular Users</div>
+                    </div>
+
+                    <div class="admin-card" style="padding: 1rem; text-align: center;">
+                        <div style="color: #6f42c1; font-size: 1.5rem; margin-bottom: 0.5rem;">👨‍💼</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;"><?php echo $role_stats['coordinator'] ?? 0; ?></div>
+                        <div style="font-size: 0.8rem; color: #666;">Coordinators</div>
+                    </div>
+
+                    <div class="admin-card" style="padding: 1rem; text-align: center;">
+                        <div style="color: #ffc107; font-size: 1.5rem; margin-bottom: 0.5rem;">✅</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;"><?php echo $role_stats['checker'] ?? 0; ?></div>
+                        <div style="font-size: 0.8rem; color: #666;">Checkers</div>
+                    </div>
+
+                    <div class="admin-card" style="padding: 1rem; text-align: center;">
+                        <div style="color: #dc3545; font-size: 1.5rem; margin-bottom: 0.5rem;">👑</div>
+                        <div style="font-size: 1.5rem; font-weight: bold;"><?php echo $role_stats['admin'] ?? 0; ?></div>
+                        <div style="font-size: 0.8rem; color: #666;">Admins</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div>
+                <h3>⚡ Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                    <a href="index.php" style="text-decoration: none; color: inherit;">
+                        <div class="admin-card" style="padding: 1rem; text-align: center; border: 1px solid #eee; cursor: pointer; transition: all 0.2s;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏠</div>
+                            <div style="font-size: 0.85rem; font-weight: 500;">Dashboard</div>
+                        </div>
+                    </a>
+
+                    <a href="orders_list.php" style="text-decoration: none; color: inherit;">
+                        <div class="admin-card" style="padding: 1rem; text-align: center; border: 1px solid #eee; cursor: pointer; transition: all 0.2s;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📋</div>
+                            <div style="font-size: 0.85rem; font-weight: 500;">Orders</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile responsive adjustments -->
+        <style>
+            @media (max-width: 768px) {
+                .admin-section>div:first-child {
+                    grid-template-columns: 1fr !important;
+                    gap: 1rem !important;
+                }
+
+                .admin-section .admin-card {
+                    font-size: 0.9rem;
+                }
+
+                .admin-section h3 {
+                    font-size: 1rem;
+                    margin-bottom: 0.5rem;
+                }
+            }
+        </style>
+    </div>
+
     <div class="admin-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h2>📋 Users List</h2>
         </div>
-        
+
         <?php if ($users_result && $users_result->num_rows > 0): ?>
             <div style="overflow-x: auto;">
                 <table class="admin-table">
@@ -234,7 +341,7 @@ if (!empty($params)) {
                                 </td>
                                 <td>
                                     <span class="status-badge" style="background: 
-                                        <?php 
+                                        <?php
                                         $role_colors = [
                                             'admin' => '#dc3545',
                                             'coordinator' => '#6f42c1',
@@ -248,10 +355,9 @@ if (!empty($params)) {
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="status-badge" style="background: 
-                                        <?php echo $user['active'] ? '#28a745' : '#dc3545'; ?>; 
-                                        color: white;">
-                                        <?php echo $user['active'] ? '✅ Active' : '❌ Inactive'; ?>
+                                    <span style="font-size: 1.2rem; display: inline-block;"
+                                        title="<?php echo $user['active'] ? 'User is active' : 'User is inactive'; ?>">
+                                        <?php echo $user['active'] ? '🟢' : '🔴'; ?>
                                     </span>
                                 </td>
                                 <td>
@@ -260,40 +366,72 @@ if (!empty($params)) {
                                     </small>
                                 </td>
                                 <td>
-                                    <?php if ($user['id'] != $_SESSION['user_id']): // Don't allow changing own role/status ?>
-                                        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                    <?php if ($user['id'] != $_SESSION['user_id']): // Don't allow changing own role/status 
+                                    ?>
+                                        <div class="action-buttons" style="display: flex; gap: 0.3rem; justify-content: center;">
                                             <!-- Role Update Form -->
                                             <form method="POST" style="display: inline-block;">
                                                 <input type="hidden" name="action" value="update_role">
                                                 <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                                <select name="role" onchange="this.form.submit()" style="padding: 0.25rem; border-radius: 4px; border: 1px solid #ddd; font-size: 0.85em;">
-                                                    <option value="ordinary" <?php echo $user['role'] === 'ordinary' ? 'selected' : ''; ?>>User</option>
-                                                    <option value="checker" <?php echo $user['role'] === 'checker' ? 'selected' : ''; ?>>Checker</option>
-                                                    <option value="coordinator" <?php echo $user['role'] === 'coordinator' ? 'selected' : ''; ?>>Coordinator</option>
-                                                    <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
+                                                <select name="role"
+                                                    onchange="this.form.submit()"
+                                                    style="background: transparent; 
+                                                               border: 1px solid #ddd; 
+                                                               padding: 0.4rem; 
+                                                               border-radius: 5px; 
+                                                               font-size: 1rem; 
+                                                               cursor: pointer;
+                                                               width: 2.5rem;
+                                                               text-align: center;"
+                                                    title="Change user role">
+                                                    <option value="ordinary" <?php echo $user['role'] === 'ordinary' ? 'selected' : ''; ?>>👤</option>
+                                                    <option value="checker" <?php echo $user['role'] === 'checker' ? 'selected' : ''; ?>>✅</option>
+                                                    <option value="coordinator" <?php echo $user['role'] === 'coordinator' ? 'selected' : ''; ?>>👨‍💼</option>
+                                                    <option value="admin" <?php echo $user['role'] === 'admin' ? 'selected' : ''; ?>>👑</option>
                                                 </select>
                                             </form>
-                                            
-                                            <!-- Status Toggle Form -->
+
+                                            <!-- Status Toggle Button -->
                                             <form method="POST" style="display: inline-block;">
                                                 <input type="hidden" name="action" value="toggle_status">
                                                 <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
-                                                <button type="submit" 
-                                                        style="background: <?php echo $user['active'] ? '#dc3545' : '#28a745'; ?>; 
-                                                               color: white; 
-                                                               border: none; 
-                                                               padding: 0.25rem 0.5rem; 
-                                                               border-radius: 4px; 
+                                                <button type="submit"
+                                                    class="action-emoji-btn"
+                                                    style="background: transparent; 
+                                                               border: 1px solid #ddd; 
+                                                               padding: 0.4rem; 
+                                                               border-radius: 5px; 
                                                                cursor: pointer; 
-                                                               font-size: 0.8em;"
-                                                        onclick="return confirm('Are you sure you want to <?php echo $user['active'] ? 'deactivate' : 'activate'; ?> this user?')">
-                                                    <?php echo $user['active'] ? '🚫 Deactivate' : '✅ Activate'; ?>
+                                                               font-size: 1rem;
+                                                               width: 2.5rem;
+                                                               height: 2.5rem;"
+                                                    onclick="return confirm('<?php echo $user['active'] ? 'Deactivate' : 'Activate'; ?> this user?')"
+                                                    title="<?php echo $user['active'] ? 'Deactivate user' : 'Activate user'; ?>">
+                                                    <?php echo $user['active'] ? '🔴' : '🟢'; ?>
                                                 </button>
                                             </form>
+
+                                            <!-- Delete Button (only if not admin) -->
+                                            <?php if ($user['role'] !== 'admin'): ?>
+                                                <button type="button"
+                                                    class="action-emoji-btn"
+                                                    style="background: transparent; 
+                                                               border: 1px solid #ddd; 
+                                                               padding: 0.4rem; 
+                                                               border-radius: 5px; 
+                                                               cursor: pointer; 
+                                                               font-size: 1rem;
+                                                               width: 2.5rem;
+                                                               height: 2.5rem;"
+                                                    onclick="deleteUser(<?php echo $user['id']; ?>)"
+                                                    title="Delete user permanently">
+                                                    🗑️
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     <?php else: ?>
-                                        <span style="color: #666; font-style: italic; font-size: 0.9em;">
-                                            🔒 Your Account
+                                        <span style="color: #999; font-size: 1rem;" title="Your account">
+                                            🔒
                                         </span>
                                     <?php endif; ?>
                                 </td>
@@ -316,67 +454,6 @@ if (!empty($params)) {
                 <?php endif; ?>
             </div>
         <?php endif; ?>
-    </div>
-    
-    <!-- User Statistics -->
-    <div class="admin-section">
-        <h2>📊 User Statistics</h2>
-        
-        <?php
-        $stats_sql = "SELECT 
-            role,
-            COUNT(*) as count
-            FROM users 
-            GROUP BY role";
-        $stats_result = $conn->query($stats_sql);
-        $role_stats = [];
-        while ($stat = $stats_result->fetch_assoc()) {
-            $role_stats[$stat['role']] = $stat['count'];
-        }
-        ?>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <div class="admin-card">
-                <div class="icon" style="color: #28a745;">👤</div>
-                <div class="number"><?php echo $role_stats['user'] ?? 0; ?></div>
-                <div class="label">Regular Users</div>
-            </div>
-            
-            <div class="admin-card">
-                <div class="icon" style="color: #ffc107;">✅</div>
-                <div class="number"><?php echo $role_stats['checker'] ?? 0; ?></div>
-                <div class="label">Ticket Checkers</div>
-            </div>
-            
-            <div class="admin-card">
-                <div class="icon" style="color: #dc3545;">👨‍💼</div>
-                <div class="number"><?php echo $role_stats['admin'] ?? 0; ?></div>
-                <div class="label">Administrators</div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Quick Actions -->
-    <div class="admin-section">
-        <h2>⚡ Quick Actions</h2>
-        
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
-            <a href="index.php" style="text-decoration: none; color: inherit;">
-                <div class="admin-card" style="border: 1px solid #eee; cursor: pointer;">
-                    <div class="icon">🏠</div>
-                    <h4>Back to Dashboard</h4>
-                    <p style="color: #666; font-size: 0.9rem;">Return to admin dashboard</p>
-                </div>
-            </a>
-            
-            <a href="orders_list.php" style="text-decoration: none; color: inherit;">
-                <div class="admin-card" style="border: 1px solid #eee; cursor: pointer;">
-                    <div class="icon">📋</div>
-                    <h4>View Orders</h4>
-                    <p style="color: #666; font-size: 0.9rem;">Check recent user orders</p>
-                </div>
-            </a>
-        </div>
     </div>
 </div>
 

@@ -13,7 +13,7 @@ $categories_result = $conn->query($categories_sql);
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $category = isset($_GET['category']) ? $_GET['category'] : '';
 
-// Build SQL query - Include both upcoming and past events
+
 $sql = "SELECT e.*, 
         MIN(t.price_cents) as min_price,
         MAX(t.price_cents) as max_price,

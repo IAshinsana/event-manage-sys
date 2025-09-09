@@ -22,7 +22,15 @@ if (!$event_id || !$action) {
 
 
 // Verify user has permission to manage this event
-$event_check_sql = "SELECT e.*, 0 as tickets_sold FROM events e WHERE e.id = ?";
+$event_check_sql = "SELECT e.*, 
+                    COALESCE(
+                        (SELECT SUM(oi.qty) 
+                         FROM orders o 
+                         INNER JOIN order_items oi ON o.id = oi.order_id
+                         INNER JOIN ticket_types tt ON oi.ticket_type_id = tt.id 
+                         WHERE tt.event_id = e.id AND o.status = 'paid'), 0
+                    ) as tickets_sold 
+                    FROM events e WHERE e.id = ?";
 $stmt = $conn->prepare($event_check_sql);
 $stmt->bind_param("i", $event_id);
 $stmt->execute();

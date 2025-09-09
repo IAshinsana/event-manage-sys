@@ -1,4 +1,24 @@
-// Simple JavaScript utilities for the event system
+// MAIN.JS - Core application entry point (CLEAN VERSION)
+// This file now includes only essential global functions
+// Most CRUD functions have been organized into separate files for better maintainability
+
+// IMPORTANT: Include these files in your HTML pages as needed:
+// <script src="assets/js/utilities.js"></script>        // Validation, helpers, mobile menu
+// <script src="assets/js/insert-functions.js"></script> // CREATE operations (login, signup, addEvent, addTicket)
+// <script src="assets/js/update-functions.js"></script> // UPDATE operations (editEvent, updateUser, approveEvent)
+// <script src="assets/js/delete-functions.js"></script> // DELETE operations (deleteEvent, deleteUser, deleteTicket)
+// <script src="assets/js/search-functions.js"></script> // SEARCH operations (month filters, event loading)
+
+// This main.js file can be included for global functionality that doesn't fit into CRUD categories
+// All functions have been moved to their respective organized files
+
+console.log('EventGate JavaScript modules loaded successfully!');
+console.log('Available modules: utilities, insert-functions, update-functions, delete-functions, search-functions');
+
+// Any global application initialization code can go here
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('EventGate application initialized');
+});
 
 // Email validation
 function validateEmail(email) {
@@ -34,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         input.addEventListener('blur', function () {
             if (this.value && !validateSriLankaMobile(this.value)) {
                 this.style.borderColor = '#dc3545';
-                showFieldError(this, 'Please enter a valid Sri Lankan mobile number (070xxxxxxx)');
+                showFieldError(this, 'Please enter a valid mobile number (070xxxxxxx)');
             } else {
                 this.style.borderColor = '#28a745';
                 hideFieldError(this);
@@ -61,43 +81,17 @@ function hideFieldError(field) {
     }
 }
 
-// Simple countdown timer
-function startCountdown(targetDate, elementId) {
-    const countdownElement = document.getElementById(elementId);
-    if (!countdownElement) return;
-
-    const targetTime = new Date(targetDate).getTime();
-
-    const timer = setInterval(function () {
-        const now = new Date().getTime();
-        const distance = targetTime - now;
-
-        if (distance < 0) {
-            clearInterval(timer);
-            countdownElement.innerHTML = "Event Started!";
-            return;
-        }
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        countdownElement.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);
-}
-
 // Mobile menu toggle (if needed)
 function toggleMobileMenu() {
     const navLinks = document.getElementById('navLinks');
-    const navButtons = document.getElementById('navButtons');
+    navLinks.classList.toggle('active');
+}
 
-    if (navLinks) {
-        navLinks.classList.toggle('active');
-    }
-    if (navButtons) {
-        navButtons.classList.toggle('active');
-    }
+// Helper function to get correct processor path
+function getProcPath(filename) {
+    const currentPath = window.location.pathname;
+    return (currentPath.includes('/admin/') || currentPath.includes('/coordinator/')) ? 
+        "../proccess/" + filename : "proccess/" + filename;
 }
 
 
@@ -244,9 +238,508 @@ function regCoor() {
         }
     }
 
-    r.open("POST", "proccess/coor_proc.php");
+    r.open("POST", getProcPath("coor_proc.php"));
     r.send(f);
 
+}
+
+// Event management functions
+function addEvent() {
+    var title = document.getElementById("title").value;
+    var description = document.getElementById("description").value;
+    var venue = document.getElementById("venue").value;
+    var category = document.getElementById("category").value;
+    var starts_at = document.getElementById("starts_at").value;
+    var ends_at = document.getElementById("ends_at").value;
+    var organizer = document.getElementById("organizer").value;
+    var booking_phone = document.getElementById("booking_phone").value;
+    var show_organizer = document.getElementById("show_organizer").checked;
+    var show_booking_phone = document.getElementById("show_booking_phone").checked;
+    var status = document.getElementById("status").value;
+    var event_image = document.getElementById("event_image").files[0];
+
+    var f = new FormData();
+    f.append("title", title);
+    f.append("description", description);
+    f.append("venue", venue);
+    f.append("category", category);
+    f.append("starts_at", starts_at);
+    f.append("ends_at", ends_at);
+    f.append("organizer", organizer);
+    f.append("booking_phone", booking_phone);
+    f.append("show_organizer", show_organizer ? 1 : 0);
+    f.append("show_booking_phone", show_booking_phone ? 1 : 0);
+    f.append("status", status);
+    if (event_image) {
+        f.append("event_image", event_image);
+    }
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            var parts = text.split("|");
+            
+            if (parts[0] == "ok") {
+                document.getElementById("errId").className = "d-none";
+                document.getElementById("succ").className = "alert alert-success";
+                document.getElementById("succ").innerHTML = "Event created successfully!";
+                
+                // Redirect to event edit page if event_id is returned
+                if (parts[1]) {
+                    setTimeout(function() {
+                        window.location.href = "event_edit.php?id=" + parts[1];
+                    }, 1500);
+                }
+            } else {
+                document.getElementById("errId").className = "alert alert-danger";
+                document.getElementById("errId").innerHTML = text;
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("event_add_proc.php"));
+    r.send(f);
+}
+
+function editEvent() {
+    var event_id = document.getElementById("event_id").value;
+    var title = document.getElementById("title").value;
+    var description = document.getElementById("description").value;
+    var venue = document.getElementById("venue").value;
+    var category = document.getElementById("category").value;
+    var starts_at = document.getElementById("starts_at").value;
+    var ends_at = document.getElementById("ends_at").value;
+    var organizer = document.getElementById("organizer").value;
+    var booking_phone = document.getElementById("booking_phone").value;
+    var show_organizer = document.getElementById("show_organizer").checked;
+    var show_booking_phone = document.getElementById("show_booking_phone").checked;
+    var status = document.getElementById("status").value;
+    var event_image = document.getElementById("event_image").files[0];
+
+    var f = new FormData();
+    f.append("event_id", event_id);
+    f.append("title", title);
+    f.append("description", description);
+    f.append("venue", venue);
+    f.append("category", category);
+    f.append("starts_at", starts_at);
+    f.append("ends_at", ends_at);
+    f.append("organizer", organizer);
+    f.append("booking_phone", booking_phone);
+    f.append("show_organizer", show_organizer ? 1 : 0);
+    f.append("show_booking_phone", show_booking_phone ? 1 : 0);
+    f.append("status", status);
+    if (event_image) {
+        f.append("event_image", event_image);
+    }
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                document.getElementById("errId").className = "d-none";
+                document.getElementById("succ").className = "alert alert-success";
+                document.getElementById("succ").innerHTML = "Event updated successfully!";
+            } else {
+                document.getElementById("errId").className = "alert alert-danger";
+                document.getElementById("errId").innerHTML = text;
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("event_edit_proc.php"));
+    r.send(f);
+}
+
+function deleteEvent(event_id, action) {
+    if (!confirm("Are you sure you want to " + action + " this event?")) {
+        return;
+    }
+
+    var f = new FormData();
+    f.append("event_id", event_id);
+    f.append("action", action);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Event " + action + "d successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    // Dynamic path detection based on current page location
+    const currentPath = window.location.pathname;
+    const procPath = currentPath.includes('/admin/') || currentPath.includes('/coordinator/') ? 
+        "../proccess/event_delete_proc.php" : "proccess/event_delete_proc.php";
+
+    r.open("POST", procPath);
+    r.send(f);
+}
+
+function approveRejectEvent(event_id, action) {
+    var rejection_reason = "";
+    if (action === 'reject') {
+        rejection_reason = prompt("Please provide a reason for rejection:");
+        if (rejection_reason === null) return; // User cancelled
+    }
+
+    var f = new FormData();
+    f.append("event_id", event_id);
+    f.append("action", action);
+    f.append("rejection_reason", rejection_reason);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Event " + action + "d successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("event_approval_proc.php"));
+    r.send(f);
+}
+
+// Ticket management functions
+function addTicket() {
+    var event_id = document.getElementById("event_id").value;
+    var name = document.getElementById("ticket_name").value;
+    var price = document.getElementById("ticket_price").value;
+    var quantity = document.getElementById("ticket_quantity").value;
+
+    var f = new FormData();
+    f.append("action", "add_ticket");
+    f.append("event_id", event_id);
+    f.append("name", name);
+    f.append("price", price);
+    f.append("quantity", quantity);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Ticket type added successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("ticket_manage_proc.php"));
+    r.send(f);
+}
+
+function editTicket(ticket_id) {
+    var event_id = document.getElementById("event_id").value;
+    var name = document.getElementById("edit_name_" + ticket_id).value;
+    var price = document.getElementById("edit_price_" + ticket_id).value;
+    var quantity = document.getElementById("edit_quantity_" + ticket_id).value;
+
+    var f = new FormData();
+    f.append("action", "update_ticket");
+    f.append("event_id", event_id);
+    f.append("ticket_id", ticket_id);
+    f.append("name", name);
+    f.append("price", price);
+    f.append("quantity", quantity);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Ticket type updated successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("ticket_manage_proc.php"));
+    r.send(f);
+}
+
+function deleteTicket(event_id, ticket_id) {
+    if (!confirm("Are you sure you want to delete this ticket type?")) {
+        return;
+    }
+
+    var f = new FormData();
+    f.append("action", "delete_ticket");
+    f.append("event_id", event_id);
+    f.append("ticket_id", ticket_id);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Ticket type deleted successfully!");
+                window.location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", getProcPath("ticket_manage_proc.php"));
+    r.send(f);
+}
+
+// User management functions
+function updateUserRole(user_id, role) {
+    var f = new FormData();
+    f.append("action", "update_role");
+    f.append("user_id", user_id);
+    f.append("role", role);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("User role updated successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", "proccess/user_manage_proc.php");
+    r.send(f);
+}
+
+function toggleUserStatus(user_id) {
+    var f = new FormData();
+    f.append("action", "toggle_status");
+    f.append("user_id", user_id);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("User status updated successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", "proccess/user_manage_proc.php");
+    r.send(f);
+}
+
+// Coordinator application management
+function approveRejectApplication(application_id, action) {
+    var admin_notes = prompt("Add notes (optional):");
+    if (admin_notes === null) return; // User cancelled
+
+    var f = new FormData();
+    f.append("application_id", application_id);
+    f.append("action", action);
+    f.append("admin_notes", admin_notes);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Application " + action + "d successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    r.open("POST", "proccess/coordinator_application_proc.php");
+    r.send(f);
+}
+
+// Delete functions for comprehensive CRUD operations
+function deleteOrder(order_id, action) {
+    let confirmMessage = action === 'delete' ? 
+        "Are you sure you want to permanently delete this order? This action cannot be undone." :
+        "Are you sure you want to cancel this order? This will refund the tickets.";
+        
+    if (!confirm(confirmMessage)) {
+        return;
+    }
+
+    var f = new FormData();
+    f.append("order_id", order_id);
+    f.append("action", action);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Order " + action + "d successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    // Dynamic path detection based on current page location
+    const currentPath = window.location.pathname;
+    const procPath = currentPath.includes('/admin/') || currentPath.includes('/coordinator/') ? 
+        "../proccess/order_delete_proc.php" : "proccess/order_delete_proc.php";
+
+    r.open("POST", procPath);
+    r.send(f);
+}
+
+function deleteUser(user_id) {
+    if (!confirm("Are you sure you want to permanently delete this user account? This action cannot be undone and will remove all user data except orders/events.")) {
+        return;
+    }
+
+    var f = new FormData();
+    f.append("user_id", user_id);
+    f.append("action", "delete");
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("User deleted successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    // Dynamic path detection based on current page location
+    const currentPath = window.location.pathname;
+    const procPath = currentPath.includes('/admin/') || currentPath.includes('/coordinator/') ? 
+        "../proccess/user_delete_proc.php" : "proccess/user_delete_proc.php";
+
+    r.open("POST", procPath);
+    r.send(f);
+}
+
+function deleteApplication(application_id) {
+    if (!confirm("Are you sure you want to permanently delete this coordinator application? This action cannot be undone.")) {
+        return;
+    }
+
+    var f = new FormData();
+    f.append("application_id", application_id);
+    f.append("action", "delete");
+    f.append("admin_notes", "");
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                alert("Application deleted successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + text);
+            }
+        }
+    }
+
+    // Dynamic path detection based on current page location
+    const currentPath = window.location.pathname;
+    const procPath = currentPath.includes('/admin/') || currentPath.includes('/coordinator/') ? 
+        "../proccess/coordinator_application_proc.php" : "proccess/coordinator_application_proc.php";
+
+    r.open("POST", procPath);
+    r.send(f);
+}
+
+// Profile update function
+function updateProfile() {
+    var name = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
+    var phone = document.getElementById("phone").value;
+    var current_password = document.getElementById("current_password").value;
+    var new_password = document.getElementById("new_password").value;
+    var confirm_password = document.getElementById("confirm_password").value;
+
+    var f = new FormData();
+    f.append("name", name);
+    f.append("email", email);
+    f.append("phone", phone);
+    f.append("current_password", current_password);
+    f.append("new_password", new_password);
+    f.append("confirm_password", confirm_password);
+
+    var r = new XMLHttpRequest();
+
+    r.onreadystatechange = function () {
+        if (r.readyState == 4) {
+            var text = r.responseText;
+            
+            if (text == "ok") {
+                document.getElementById("errId").className = "d-none";
+                document.getElementById("succ").className = "alert alert-success";
+                document.getElementById("succ").innerHTML = "Profile updated successfully!";
+                
+                // Clear password fields
+                document.getElementById("current_password").value = "";
+                document.getElementById("new_password").value = "";
+                document.getElementById("confirm_password").value = "";
+            } else {
+                document.getElementById("errId").className = "alert alert-danger";
+                document.getElementById("errId").innerHTML = text;
+            }
+        }
+    }
+
+    r.open("POST", "proccess/profile_update_proc.php");
+    r.send(f);
 }
 
 // Homepage month filter functionality

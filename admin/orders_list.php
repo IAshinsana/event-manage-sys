@@ -129,6 +129,27 @@ $orders_result = $conn->query($orders_sql);
                                                     Mark Paid
                                                 </button>
                                             </form>
+                                            
+                                            <button onclick="deleteOrder(<?php echo $order['id']; ?>, 'delete')" 
+                                                    class="btn btn-danger" 
+                                                    style="font-size: 0.85rem; padding: 0.4rem 0.8rem;"
+                                                    title="Permanently delete pending order">
+                                                🗑️ Delete
+                                            </button>
+                                        <?php elseif ($order['status'] === 'paid'): ?>
+                                            <button onclick="deleteOrder(<?php echo $order['id']; ?>, 'cancel')" 
+                                                    class="btn" 
+                                                    style="background: #6c757d; color: white; font-size: 0.85rem; padding: 0.4rem 0.8rem;"
+                                                    title="Cancel paid order (refund)">
+                                                ❌ Cancel
+                                            </button>
+                                        <?php elseif ($order['status'] === 'cancelled'): ?>
+                                            <button onclick="deleteOrder(<?php echo $order['id']; ?>, 'delete')" 
+                                                    class="btn btn-danger" 
+                                                    style="font-size: 0.85rem; padding: 0.4rem 0.8rem;"
+                                                    title="Permanently delete cancelled order">
+                                                🗑️ Delete
+                                            </button>
                                         <?php endif; ?>
                                     </div>
                                 </td>

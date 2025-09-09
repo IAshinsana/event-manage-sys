@@ -1,6 +1,7 @@
 <?php
 $page_title = "Apply as Event Coordinator";
 include 'includes/header.php';
+include 'includes/db.php';
 
 // Redirect if already logged in
 if (is_logged_in()) {

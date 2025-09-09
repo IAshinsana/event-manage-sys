@@ -32,7 +32,6 @@ $tickets_result = $conn->query($tickets_sql);
 ?>
 
 <link rel="stylesheet" href="assets/css/event_view.css">
-<script src="assets/js/countdown.js"></script>
 
 
 <!-- Event Hero Section -->
@@ -56,11 +55,6 @@ $tickets_result = $conn->query($tickets_sql);
                     📍 <?php echo htmlspecialchars($event['venue']); ?>
                 </div>
             <?php endif; ?>
-            
-            <!-- Countdown Timer Container -->
-            <div class="countdown-container">
-                <div id="countdown"></div>
-            </div>
             
             <!-- Book Tickets Button -->
             <?php if ($tickets_result && $tickets_result->num_rows > 0 && !$event_has_ended): ?>
@@ -189,7 +183,7 @@ $tickets_result = $conn->query($tickets_sql);
                                 <button class="btn-sold-out">Event Ended</button>
                             <?php elseif ($available > 0): ?>
                                 <?php if (is_logged_in()): ?>
-                                    <a href="register_start.php?event_id=<?php echo $event_id; ?>" class="btn-book-now">
+                                    <a href="tickets_select.php?event_id=<?php echo $event_id; ?>" class="btn-book-now">
                                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px; fill: currentColor;">
                                             <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                                         </svg>
@@ -221,9 +215,6 @@ $tickets_result = $conn->query($tickets_sql);
 </div>
 
 <script>
-// Start countdown timer with event end time checking
-startCountdown('<?php echo $event['starts_at']; ?>', 'countdown');
-
 // Check if event has ended on page load
 <?php if ($event_has_ended): ?>
 document.addEventListener('DOMContentLoaded', function() {

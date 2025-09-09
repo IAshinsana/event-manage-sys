@@ -2,21 +2,16 @@
 include '../includes/db.php';
 include '../includes/base_url.php';
 
-// Get month parameter
 $month = $_GET['month'] ?? 'current';
 
-// Set date range based on month
 if ($month === 'next') {
-    // Next month events
     $start_date = date('Y-m-01', strtotime('+1 month'));
     $end_date = date('Y-m-t', strtotime('+1 month'));
 } else {
-    // Current month events (default)
     $start_date = date('Y-m-01');
     $end_date = date('Y-m-t');
 }
 
-// Get events for the specified month
 $sql = "SELECT e.*, 
         MIN(t.price_cents) as min_price,
         MAX(t.price_cents) as max_price,
@@ -35,12 +30,10 @@ $stmt->bind_param("ss", $start_date, $end_date);
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Generate HTML for events
 if ($result && $result->num_rows > 0) {
     while ($event = $result->fetch_assoc()) {
 ?>
         <div class="minimal-event-card card" onclick="window.location.href='event_view.php?id=<?php echo $event['id']; ?>'">
-            <!-- Event Image -->
             <div class="minimal-event-image">
                 <?php if ($event['image_path']): ?>
                     <img src="<?php echo $event['image_path']; ?>" alt="<?php echo $event['title']; ?>">
@@ -51,7 +44,6 @@ if ($result && $result->num_rows > 0) {
                 <?php endif; ?>
             </div>
 
-            <!-- Event Content -->
             <div class="card-body">
                 <h3 class="minimal-event-title"><?php echo htmlspecialchars($event['title']); ?></h3>
 
@@ -93,7 +85,6 @@ if ($result && $result->num_rows > 0) {
     <?php
     }
 } else {
-    // No events found
     $monthName = ($month === 'next') ? 'next month' : 'this month';
     ?>
     <div class="text-center p-4" style="background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); color: var(--gray-600); margin: 2rem 0; grid-column: 1 / -1;">

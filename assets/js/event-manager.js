@@ -179,7 +179,16 @@ class EventManager {
 
     async archiveEvent(eventId, reason) {
         try {
-            const response = await fetch('archive_event.php', {
+            // Determine the correct path based on current page location
+            const currentPath = window.location.pathname;
+            let actionUrl = 'archive_event.php';
+            
+            // If we're in admin or coordinator directory, adjust path
+            if (currentPath.includes('/admin/') || currentPath.includes('/coordinator/')) {
+                actionUrl = '../archive_event.php';
+            }
+            
+            const response = await fetch(actionUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -204,8 +213,16 @@ class EventManager {
     async reactivateEvent(eventId, needsApproval) {
 
         try {
+            // Determine the correct path based on current page location
+            const currentPath = window.location.pathname;
+            let actionUrl = 'archive_event.php';
             
-            const response = await fetch('archive_event.php', {
+            // If we're in admin or coordinator directory, adjust path
+            if (currentPath.includes('/admin/') || currentPath.includes('/coordinator/')) {
+                actionUrl = '../archive_event.php';
+            }
+            
+            const response = await fetch(actionUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -232,7 +249,16 @@ class EventManager {
 
     async deleteEvent(eventId) {
         try {
-            const response = await fetch('archive_event.php', {
+            // Determine the correct path based on current page location
+            const currentPath = window.location.pathname;
+            let actionUrl = 'archive_event.php';
+            
+            // If we're in admin or coordinator directory, adjust path
+            if (currentPath.includes('/admin/') || currentPath.includes('/coordinator/')) {
+                actionUrl = '../archive_event.php';
+            }
+            
+            const response = await fetch(actionUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

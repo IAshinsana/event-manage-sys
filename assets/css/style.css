@@ -1129,3 +1129,191 @@ main {
     gap: 1rem;
     justify-content: flex-end;
 }
+
+/* Confirmation Modal Styles */
+.confirmation-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.2s ease-out;
+}
+
+.confirmation-modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 500px;
+    width: 90%;
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+}
+
+.confirmation-header {
+    padding: 1.5rem 1.5rem 0;
+    text-align: center;
+}
+
+.confirmation-header h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.confirmation-body {
+    padding: 1rem 1.5rem;
+    text-align: center;
+}
+
+.confirmation-body p {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.confirmation-details {
+    background: var(--gray-100);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    border-left: 4px solid var(--accent);
+}
+
+.confirmation-input-group {
+    margin: 1.5rem 0 1rem 0;
+    text-align: left;
+}
+
+.confirmation-input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.confirmation-input-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.confirmation-input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.confirmation-actions {
+    padding: 0 1.5rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirmation-actions .btn {
+    flex: 1;
+    max-width: 140px;
+}
+
+/* Floating Alert Styles */
+.floating-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 1rem 1.5rem;
+    border-left: 4px solid;
+    z-index: 9999;
+    animation: slideInAlert 0.3s ease-out;
+    max-width: 400px;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.alert-success {
+    border-left-color: var(--success);
+}
+
+.alert-error {
+    border-left-color: var(--danger);
+}
+
+.alert-warning {
+    border-left-color: var(--warning);
+}
+
+.alert-content {
+    flex: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--gray-500);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.alert-close:hover {
+    color: var(--danger);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideInAlert {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Input Error Styles */
+.input-error {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: block;
+}

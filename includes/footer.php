@@ -12,6 +12,12 @@
         </div>
     </footer>
     
+    <!-- JavaScript Modules - CRUD Organized -->
+    <script src="<?php echo $BASE_URL; ?>assets/js/utilities.js"></script>
+    <script src="<?php echo $BASE_URL; ?>assets/js/insert-functions.js"></script>
+    <script src="<?php echo $BASE_URL; ?>assets/js/update-functions.js"></script>
+    <script src="<?php echo $BASE_URL; ?>assets/js/delete-functions.js"></script>
+    <script src="<?php echo $BASE_URL; ?>assets/js/search-functions.js"></script>
     <script src="<?php echo $BASE_URL; ?>assets/js/main.js"></script>
 </body>
 </html>

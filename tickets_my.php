@@ -4,7 +4,6 @@ include 'includes/header.php';
 include 'includes/db.php';
 require_login();
 
-
 $order_id = isset($_GET['order_id']) ? (int)$_GET['order_id'] : 0;
 
 // Get user's paid tickets
